@@ -1,0 +1,82 @@
+
+============================================================
+Sessao iniciada: 16/05/2026, 17:56:39
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[16/05/2026, 17:56:39] [Sistema] EzBot_IA v3.0 iniciando...
+[16/05/2026, 17:56:39] [Bot] Conectando em Ezbotttt.aternos.me:21779...
+[16/05/2026, 17:56:40] [Bot] Conectado ao servidor!
+[16/05/2026, 17:56:41] [Loop] Iniciando loop de missoes!
+[16/05/2026, 17:56:41] [Missao] Minerando pedra
+[16/05/2026, 17:57:07] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:57:32] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:57:57] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:57:57] [Missao] Minerando pedra
+[16/05/2026, 17:58:22] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:58:48] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:59:13] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:59:13] [Missao] Minerando pedra
+[16/05/2026, 17:59:38] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 17:59:56] [Morte] Morreu! Total mortes: 1
+[16/05/2026, 18:00:04] [Timeout] MINERAR_PEDRA demorou mais de 25s, pulando
+[16/05/2026, 18:00:04] [Missao] Coletando madeira
+
+============================================================
+Sessao iniciada: 16/05/2026, 18:00:06
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[16/05/2026, 18:00:06] [Sistema] EzBot_IA v3.0 iniciando...
+[16/05/2026, 18:00:06] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[16/05/2026, 18:00:08] [Bot] Conectado!
+[16/05/2026, 18:00:10] [Loop] Iniciando!
+[16/05/2026, 18:00:10] [Missao] Coletando madeira
+[16/05/2026, 18:00:13] [Coletou] Madeira x1
+[16/05/2026, 18:00:13] [Wood err] require is not defined
+[16/05/2026, 18:00:18] [Walk] -> -78 87
+[16/05/2026, 18:00:22] [Coletou] Madeira x2
+[16/05/2026, 18:00:22] [Wood err] require is not defined
+[16/05/2026, 18:00:26] [Walk] -> -95 79
+[16/05/2026, 18:00:31] [Coletou] Madeira x3
+[16/05/2026, 18:00:31] [Wood err] require is not defined
+[16/05/2026, 18:00:34] [Walk] -> -83 69
+
+============================================================
+Sessao iniciada: 16/05/2026, 18:00:40
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[16/05/2026, 18:00:40] [Sistema] EzBot_IA v3.0 iniciando...
+[16/05/2026, 18:00:40] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[16/05/2026, 18:00:41] [Bot] Conectado!
+[16/05/2026, 18:00:43] [Loop] Iniciando!
+[16/05/2026, 18:00:43] [Missao] Coletando madeira
+[16/05/2026, 18:00:46] [Coletou] Madeira x1
+[16/05/2026, 18:01:05] [Coletou] Madeira x3
+[16/05/2026, 18:01:08] [Kill] skeleton (total: 1)
+[16/05/2026, 18:01:35] [AI] Quota excedida, esperando 60s
+[16/05/2026, 18:01:38] [Kill] zombie (total: 2)
+[16/05/2026, 18:01:38] [Timeout] COLETAR_MADEIRA (30s)
+[16/05/2026, 18:01:38] [Wood err] Digging aborted
+[16/05/2026, 18:01:39] [Wood err] Digging aborted
+[16/05/2026, 18:01:39] [Kill] zombie (total: 3)
+[16/05/2026, 18:01:44] [Walk] -> -107 58
+[16/05/2026, 18:01:48] [Coletou] Madeira x5
+[16/05/2026, 18:01:52] [Coletou] Madeira x6
+[16/05/2026, 18:01:59] [Coletou] Madeira x8
+[16/05/2026, 18:02:06] [Coletou] Madeira x10
+[16/05/2026, 18:02:13] [Coletou] Madeira x12
+[16/05/2026, 18:02:16] [Missao] Coletando madeira
+
+============================================================
+Sessao iniciada: 16/05/2026, 18:02:18
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[16/05/2026, 18:02:18] [Sistema] EzBot_IA v3.0 iniciando...
+[16/05/2026, 18:02:18] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[16/05/2026, 18:02:19] [Bot] Conectado!
+[16/05/2026, 18:02:21] [Loop] Iniciando!
+[16/05/2026, 18:02:21] [Missao] Coletando madeira
+[16/05/2026, 18:02:24] [Coletou] Madeira x1
+[16/05/2026, 18:02:31] [Coletou] Madeira x3
+[16/05/2026, 18:02:38] [Coletou] Madeira x5
+[16/05/2026, 18:02:45] [Coletou] Madeira x7
+[16/05/2026, 18:02:54] [Wood] Took to long to decide path to goal!
