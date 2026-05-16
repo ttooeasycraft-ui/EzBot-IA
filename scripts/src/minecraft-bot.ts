@@ -1,4 +1,5 @@
 import mineflayer from 'mineflayer'
+import OpenAI from 'openai'
 // @ts-ignore
 import pathfinderPkg from 'mineflayer-pathfinder'
 
@@ -9,7 +10,69 @@ const PORT = 21779
 const BOT_NAME = 'EzBot_IA'
 const VERSION = '1.20.1'
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
 let reconnectDelay = 5000
+let lastAIDecision = Date.now()
+let currentAction = 'Iniciando...'
+let chatHistory: { role: 'user' | 'assistant' | 'system', content: string }[] = []
+
+async function askAI(situation: string): Promise<string> {
+  try {
+    chatHistory.push({ role: 'user', content: situation })
+    if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10)
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `Você é o cérebro de um bot de Minecraft chamado EzBot_IA. Seu objetivo é sobreviver e vencer o jogo (matar o Ender Dragon).
+Responda SEMPRE com um JSON assim: {"acao": "NOME_DA_ACAO", "motivo": "motivo curto", "chat": "mensagem curta opcional para o chat do servidor"}
+Ações disponíveis: EXPLORAR, COLETAR_MADEIRA, MINERAR_PEDRA, LUTAR, COMER, CRAFTAR_FERRAMENTAS, FUGIR, DORMIR, CONSTRUIR_ABRIGO
+Seja direto e estratégico. Chat é opcional — só use quando for algo interessante de dizer.`,
+        },
+        ...chatHistory,
+      ],
+      max_tokens: 150,
+      response_format: { type: 'json_object' },
+    })
+
+    const content = response.choices[0].message.content || '{}'
+    chatHistory.push({ role: 'assistant', content })
+    return content
+  } catch (e) {
+    console.log('[AI] Erro ao consultar GPT:', e)
+    return '{"acao": "EXPLORAR", "motivo": "erro na IA, modo fallback"}'
+  }
+}
+
+function buildSituationReport(bot: mineflayer.Bot): string {
+  const pos = bot.entity.position
+  const nearbyMobs = Object.values(bot.entities)
+    .filter((e: any) => e.type === 'mob' && e.position.distanceTo(pos) < 20)
+    .map((e: any) => e.name)
+    .filter(Boolean)
+    .slice(0, 5)
+
+  const inventory = bot.inventory.items()
+    .reduce((acc: Record<string, number>, item: any) => {
+      acc[item.name] = (acc[item.name] || 0) + item.count
+      return acc
+    }, {})
+
+  const isNight = bot.time.timeOfDay > 13000 && bot.time.timeOfDay < 23000
+
+  return JSON.stringify({
+    posicao: { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) },
+    saude: bot.health,
+    fome: bot.food,
+    isNight,
+    mobs_proximos: nearbyMobs,
+    inventario: inventory,
+    acao_atual: currentAction,
+  })
+}
 
 function createBot() {
   console.log(`[Bot] Conectando em ${HOST}:${PORT}...`)
@@ -24,8 +87,8 @@ function createBot() {
 
   bot.loadPlugin(pathfinder)
 
-  bot.once('spawn', () => {
-    console.log('[Bot] Conectado e spawnou no mundo!')
+  bot.once('spawn', async () => {
+    console.log('[Bot] Conectado! ChatGPT no comando.')
     reconnectDelay = 5000
 
     const defaultMove = new Movements(bot)
@@ -33,38 +96,58 @@ function createBot() {
     defaultMove.canDig = true
     bot.pathfinder.setMovements(defaultMove)
 
-    bot.chat('Oi! Sou um bot de IA. Vou explorar e tentar sobreviver!')
+    bot.chat('EzBot_IA online! Deixa eu ver o que vou fazer...')
 
-    startSurvivalLoop(bot)
+    await sleep(2000)
+    startAILoop(bot)
   })
 
-  bot.on('chat', (username: string, message: string) => {
+  bot.on('chat', async (username: string, message: string) => {
     if (username === bot.username) return
     console.log(`[Chat] ${username}: ${message}`)
 
     if (message === '!status') {
       const pos = bot.entity.position
-      const health = bot.health
-      const food = bot.food
-      bot.chat(`Saude: ${health.toFixed(1)} | Fome: ${food} | Pos: ${Math.floor(pos.x)}, ${Math.floor(pos.y)}, ${Math.floor(pos.z)}`)
+      bot.chat(`Saude: ${bot.health.toFixed(1)} | Fome: ${bot.food} | Pos: ${Math.floor(pos.x)}, ${Math.floor(pos.y)}, ${Math.floor(pos.z)} | Fazendo: ${currentAction}`)
+      return
     }
 
     if (message === '!parar') {
-      bot.chat('Parando atividade atual...')
+      bot.chat('Ok, parando...')
       bot.pathfinder.stop()
+      return
+    }
+
+    if (message.startsWith('!falar ')) {
+      const pergunta = message.replace('!falar ', '')
+      try {
+        const resp = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'Você é EzBot_IA, um bot de Minecraft. Responda de forma curta e divertida, máximo 200 caracteres.' },
+            { role: 'user', content: pergunta }
+          ],
+          max_tokens: 60,
+        })
+        const reply = resp.choices[0].message.content || 'Hmm...'
+        bot.chat(reply.substring(0, 200))
+      } catch (_e) {
+        bot.chat('Nao consegui pensar agora!')
+      }
     }
   })
 
   bot.on('health', () => {
-    if (bot.health < 8) {
-      console.log(`[Bot] Saude baixa (${bot.health})! Tentando comer...`)
+    if (bot.health < 6) {
+      console.log(`[Bot] PERIGO! Saude critica: ${bot.health}`)
       eatFood(bot)
     }
   })
 
   bot.on('death', () => {
-    console.log('[Bot] Morri! Vou esperar respawnar...')
-    bot.chat('Morri... vou tentar de novo!')
+    console.log('[Bot] Morri!')
+    bot.chat('Morri... voltando!')
+    currentAction = 'Respawnando'
   })
 
   bot.on('kicked', (reason: string) => {
@@ -92,6 +175,75 @@ function scheduleReconnect() {
   }, reconnectDelay)
 }
 
+async function startAILoop(bot: mineflayer.Bot) {
+  while (bot.entity) {
+    try {
+      const now = Date.now()
+      if (now - lastAIDecision < 8000) {
+        await sleep(1000)
+        continue
+      }
+
+      lastAIDecision = now
+      const situation = buildSituationReport(bot)
+      console.log(`[AI] Situacao: ${situation}`)
+
+      const decision = await askAI(`Situacao atual: ${situation}. O que devo fazer?`)
+      console.log(`[AI] Decisao: ${decision}`)
+
+      const parsed = JSON.parse(decision)
+      const acao = parsed.acao as string
+      const motivo = parsed.motivo as string
+      const chatMsg = parsed.chat as string | undefined
+
+      currentAction = acao
+      console.log(`[Bot] Acao: ${acao} | Motivo: ${motivo}`)
+
+      if (chatMsg && chatMsg.length > 0) {
+        bot.chat(chatMsg.substring(0, 200))
+      }
+
+      await executeAction(bot, acao)
+    } catch (e) {
+      console.log('[AI] Erro no loop:', e)
+      await sleep(3000)
+    }
+  }
+}
+
+async function executeAction(bot: mineflayer.Bot, acao: string) {
+  switch (acao) {
+    case 'COLETAR_MADEIRA':
+      await gatherWood(bot)
+      break
+    case 'MINERAR_PEDRA':
+      await mineStone(bot)
+      break
+    case 'LUTAR':
+      await fight(bot)
+      break
+    case 'COMER':
+      await eatFood(bot)
+      break
+    case 'CRAFTAR_FERRAMENTAS':
+      await craftTools(bot)
+      break
+    case 'FUGIR':
+      await flee(bot)
+      break
+    case 'CONSTRUIR_ABRIGO':
+      await randomWalk(bot)
+      break
+    case 'DORMIR':
+      await tryToSleep(bot)
+      break
+    case 'EXPLORAR':
+    default:
+      await randomWalk(bot)
+      break
+  }
+}
+
 async function eatFood(bot: mineflayer.Bot) {
   const foodItems = bot.inventory.items().filter((item: any) => item.foodPoints && item.foodPoints > 0)
   if (foodItems.length > 0) {
@@ -105,163 +257,6 @@ async function eatFood(bot: mineflayer.Bot) {
   }
 }
 
-type Phase = 'exploring' | 'gathering' | 'fighting' | 'building_shelter'
-
-let currentPhase: Phase = 'exploring'
-let loopRunning = false
-
-function startSurvivalLoop(bot: mineflayer.Bot) {
-  if (loopRunning) return
-  loopRunning = true
-  console.log('[Bot] Iniciando loop de sobrevivencia...')
-  survivalTick(bot)
-}
-
-async function survivalTick(bot: mineflayer.Bot) {
-  if (!bot.entity) return
-
-  const health = bot.health
-  const food = bot.food
-  const inventory = bot.inventory.items()
-
-  console.log(`[Bot] Fase: ${currentPhase} | Saude: ${health.toFixed(1)} | Fome: ${food} | Itens: ${inventory.length}`)
-
-  if (health < 8) {
-    await eatFood(bot)
-    await sleep(2000)
-    survivalTick(bot)
-    return
-  }
-
-  if (food < 8) {
-    await eatFood(bot)
-  }
-
-  try {
-    switch (currentPhase) {
-      case 'exploring':
-        await explorePhase(bot)
-        break
-      case 'gathering':
-        await gatheringPhase(bot)
-        break
-      case 'fighting':
-        await fightingPhase(bot)
-        break
-      case 'building_shelter':
-        await shelterPhase(bot)
-        break
-    }
-  } catch (e) {
-    console.log(`[Bot] Erro na fase ${currentPhase}:`, e)
-  }
-
-  await sleep(3000)
-  survivalTick(bot)
-}
-
-async function explorePhase(bot: mineflayer.Bot) {
-  const wood = countItem(bot, 'log')
-  const planks = countItem(bot, 'planks')
-
-  if (wood + planks < 10) {
-    console.log('[Bot] Preciso de madeira! Indo coletar...')
-    await gatherWood(bot)
-    return
-  }
-
-  const stone = countItem(bot, 'cobblestone')
-  if (stone < 20) {
-    console.log('[Bot] Preciso de pedra! Mineirando...')
-    currentPhase = 'gathering'
-    return
-  }
-
-  const hasSword = bot.inventory.items().some((i: any) => i.name.includes('sword'))
-  if (!hasSword) {
-    console.log('[Bot] Vou craftar uma espada...')
-    await craftSword(bot)
-    return
-  }
-
-  const nearbyMobs = Object.values(bot.entities).filter((e: any) =>
-    e.type === 'mob' &&
-    e.position.distanceTo(bot.entity.position) < 10 &&
-    isHostile(e.name)
-  )
-
-  if (nearbyMobs.length > 0) {
-    console.log(`[Bot] Mobs hostis por perto! Fase: combate`)
-    currentPhase = 'fighting'
-    return
-  }
-
-  console.log('[Bot] Explorando o mundo...')
-  await randomWalk(bot)
-}
-
-async function gatheringPhase(bot: mineflayer.Bot) {
-  const stone = countItem(bot, 'cobblestone')
-  if (stone >= 30) {
-    console.log('[Bot] Tenho pedra suficiente! Voltando a explorar...')
-    currentPhase = 'exploring'
-    return
-  }
-
-  const stoneBlock = bot.findBlock({
-    matching: (block: any) => block && (block.name.includes('stone') || block.name.includes('cobblestone')),
-    maxDistance: 32,
-  })
-
-  if (stoneBlock) {
-    try {
-      const goal = new goals.GoalBlock(stoneBlock.position.x, stoneBlock.position.y, stoneBlock.position.z)
-      await bot.pathfinder.goto(goal)
-      await bot.dig(stoneBlock)
-      console.log('[Bot] Minerou pedra!')
-    } catch (_e) {
-      console.log('[Bot] Nao consegui minerar aqui')
-      await randomWalk(bot)
-    }
-  } else {
-    await randomWalk(bot)
-  }
-}
-
-async function fightingPhase(bot: mineflayer.Bot) {
-  const hostileMobs = Object.values(bot.entities).filter((e: any) =>
-    e.type === 'mob' &&
-    e.position.distanceTo(bot.entity.position) < 16 &&
-    isHostile(e.name)
-  )
-
-  if (hostileMobs.length === 0) {
-    console.log('[Bot] Nenhum mob por perto. Voltando a explorar...')
-    currentPhase = 'exploring'
-    return
-  }
-
-  const target = (hostileMobs as any[]).sort((a, b) =>
-    a.position.distanceTo(bot.entity.position) - b.position.distanceTo(bot.entity.position)
-  )[0]
-
-  if (!target || !target.isValid) {
-    currentPhase = 'exploring'
-    return
-  }
-
-  console.log(`[Bot] Atacando ${target.name}!`)
-  bot.lookAt(target.position.offset(0, target.height / 2, 0))
-  bot.attack(target)
-
-  await sleep(500)
-}
-
-async function shelterPhase(bot: mineflayer.Bot) {
-  console.log('[Bot] Fase abrigo - voltando a explorar...')
-  currentPhase = 'exploring'
-}
-
 async function gatherWood(bot: mineflayer.Bot) {
   const logBlock = bot.findBlock({
     matching: (block: any) => block && (block.name.includes('log') || block.name.includes('wood')),
@@ -270,56 +265,103 @@ async function gatherWood(bot: mineflayer.Bot) {
 
   if (logBlock) {
     try {
-      const goal = new goals.GoalBlock(logBlock.position.x, logBlock.position.y, logBlock.position.z)
-      await bot.pathfinder.goto(goal)
+      await bot.pathfinder.goto(new goals.GoalBlock(logBlock.position.x, logBlock.position.y, logBlock.position.z))
       await bot.dig(logBlock)
       console.log('[Bot] Coletou madeira!')
     } catch (_e) {
-      console.log('[Bot] Nao consegui chegar a madeira')
       await randomWalk(bot)
     }
   } else {
-    console.log('[Bot] Nenhuma madeira por perto, explorando...')
     await randomWalk(bot)
   }
 }
 
-async function craftSword(bot: mineflayer.Bot) {
-  try {
-    const craftingTable = bot.findBlock({ matching: (b: any) => b && b.name === 'crafting_table', maxDistance: 16 })
+async function mineStone(bot: mineflayer.Bot) {
+  const stoneBlock = bot.findBlock({
+    matching: (block: any) => block && (block.name.includes('stone') || block.name === 'cobblestone'),
+    maxDistance: 32,
+  })
 
-    if (craftingTable) {
-      await bot.pathfinder.goto(new goals.GoalBlock(craftingTable.position.x, craftingTable.position.y, craftingTable.position.z))
+  if (stoneBlock) {
+    try {
+      await bot.pathfinder.goto(new goals.GoalBlock(stoneBlock.position.x, stoneBlock.position.y, stoneBlock.position.z))
+      await bot.dig(stoneBlock)
+      console.log('[Bot] Minerou pedra!')
+    } catch (_e) {
+      await randomWalk(bot)
     }
+  } else {
+    await randomWalk(bot)
+  }
+}
 
-    const recipes = bot.recipesFor(302, null, 1, craftingTable || null)
+async function fight(bot: mineflayer.Bot) {
+  const mobs = Object.values(bot.entities).filter((e: any) =>
+    e.type === 'mob' && e.position.distanceTo(bot.entity.position) < 16 && isHostile(e.name)
+  )
+
+  if (mobs.length === 0) return
+
+  const target = (mobs as any[]).sort((a, b) =>
+    a.position.distanceTo(bot.entity.position) - b.position.distanceTo(bot.entity.position)
+  )[0]
+
+  if (target && target.isValid) {
+    console.log(`[Bot] Atacando ${target.name}!`)
+    bot.lookAt(target.position.offset(0, target.height / 2, 0))
+    bot.attack(target)
+    await sleep(600)
+  }
+}
+
+async function flee(bot: mineflayer.Bot) {
+  const pos = bot.entity.position
+  const x = pos.x + (Math.random() - 0.5) * 40
+  const z = pos.z + (Math.random() - 0.5) * 40
+  try {
+    await bot.pathfinder.goto(new goals.GoalXZ(Math.floor(x), Math.floor(z)))
+  } catch (_e) {}
+}
+
+async function craftTools(bot: mineflayer.Bot) {
+  try {
+    const table = bot.findBlock({ matching: (b: any) => b && b.name === 'crafting_table', maxDistance: 16 })
+    if (table) {
+      await bot.pathfinder.goto(new goals.GoalBlock(table.position.x, table.position.y, table.position.z))
+    }
+    const recipes = bot.recipesFor(302, null, 1, table || null)
     if (recipes.length > 0) {
-      await bot.craft(recipes[0], 1, craftingTable || undefined)
-      console.log('[Bot] Craftou espada de madeira!')
+      await bot.craft(recipes[0], 1, table || undefined)
+      console.log('[Bot] Craftou espada!')
     }
   } catch (_e) {
-    console.log('[Bot] Nao consegui craftar espada ainda')
+    console.log('[Bot] Nao consegui craftar')
+  }
+}
+
+async function tryToSleep(bot: mineflayer.Bot) {
+  const bed = bot.findBlock({ matching: (b: any) => b && b.name.includes('bed'), maxDistance: 32 })
+  if (bed) {
+    try {
+      await bot.pathfinder.goto(new goals.GoalBlock(bed.position.x, bed.position.y, bed.position.z))
+      await bot.sleep(bed)
+      console.log('[Bot] Dormindo!')
+    } catch (_e) {
+      console.log('[Bot] Nao consegui dormir')
+    }
   }
 }
 
 async function randomWalk(bot: mineflayer.Bot) {
   const pos = bot.entity.position
-  const x = pos.x + (Math.random() - 0.5) * 60
-  const z = pos.z + (Math.random() - 0.5) * 60
-
+  const x = pos.x + (Math.random() - 0.5) * 80
+  const z = pos.z + (Math.random() - 0.5) * 80
   try {
-    const goal = new goals.GoalXZ(Math.floor(x), Math.floor(z))
-    await bot.pathfinder.goto(goal)
-    console.log(`[Bot] Andou para ${Math.floor(x)}, ${Math.floor(z)}`)
+    await bot.pathfinder.goto(new goals.GoalXZ(Math.floor(x), Math.floor(z)))
+    console.log(`[Bot] Explorou para ${Math.floor(x)}, ${Math.floor(z)}`)
   } catch (_e) {
-    console.log('[Bot] Nao consegui caminhar ate la')
+    console.log('[Bot] Nao consegui caminhar')
   }
-}
-
-function countItem(bot: mineflayer.Bot, name: string): number {
-  return bot.inventory.items()
-    .filter((i: any) => i.name.includes(name))
-    .reduce((sum: number, i: any) => sum + i.count, 0)
 }
 
 function isHostile(name: string | undefined | null): boolean {
