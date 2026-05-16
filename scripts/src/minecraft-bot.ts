@@ -1,5 +1,5 @@
 import mineflayer from 'mineflayer'
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 // @ts-ignore
 import pathfinderPkg from 'mineflayer-pathfinder'
 
@@ -10,7 +10,8 @@ const PORT = 21779
 const BOT_NAME = 'EzBot_IA'
 const VERSION = '1.21.8'
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '')
+const gemini = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
 let reconnectDelay = 5000
 let lastAIDecision = Date.now()
@@ -18,33 +19,41 @@ let currentAction = 'Iniciando...'
 let chatHistory: { role: 'user' | 'assistant' | 'system', content: string }[] = []
 
 async function askAI(situation: string): Promise<string> {
-  try {
-    chatHistory.push({ role: 'user', content: situation })
-    if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10)
+  chatHistory.push({ role: 'user', content: situation })
+  if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10)
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `Você é o cérebro de um bot de Minecraft chamado EzBot_IA. Seu objetivo é sobreviver e vencer o jogo (matar o Ender Dragon).
-Responda SEMPRE com um JSON assim: {"acao": "NOME_DA_ACAO", "motivo": "motivo curto", "chat": "mensagem curta opcional para o chat do servidor"}
+  const systemPrompt = `Você é o cérebro de um bot de Minecraft chamado EzBot_IA. Seu objetivo é sobreviver e vencer o jogo (matar o Ender Dragon).
+Responda SEMPRE com um JSON válido assim: {"acao": "NOME_DA_ACAO", "motivo": "motivo curto", "chat": "mensagem curta opcional para o chat do servidor"}
 Ações disponíveis: EXPLORAR, COLETAR_MADEIRA, MINERAR_PEDRA, LUTAR, COMER, CRAFTAR_FERRAMENTAS, FUGIR, DORMIR, CONSTRUIR_ABRIGO
-Seja direto e estratégico. Chat é opcional — só use quando for algo interessante de dizer.`,
-        },
-        ...chatHistory,
-      ],
-      max_tokens: 150,
-      response_format: { type: 'json_object' },
-    })
+Seja direto e estratégico. O campo "chat" é opcional — só inclua quando for algo interessante de dizer no servidor.
+Responda APENAS com o JSON, sem texto extra.`
 
-    const content = response.choices[0].message.content || '{}'
-    chatHistory.push({ role: 'assistant', content })
-    return content
-  } catch (e) {
-    console.log('[AI] Erro ao consultar GPT:', e)
-    return '{"acao": "EXPLORAR", "motivo": "erro na IA, modo fallback"}'
+  const historyText = chatHistory.map(h => `${h.role === 'user' ? 'Situação' : 'Decisão'}: ${h.content}`).join('\n')
+  const fullPrompt = `${systemPrompt}\n\n${historyText}`
+
+  // Retry up to 3 times with backoff for quota errors
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const result = await gemini.generateContent(fullPrompt)
+      const text = result.response.text().trim()
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      const content = jsonMatch ? jsonMatch[0] : '{"acao": "EXPLORAR", "motivo": "resposta invalida"}'
+      chatHistory.push({ role: 'assistant', content })
+      console.log('[AI] Gemini respondeu!')
+      return content
+    } catch (e: any) {
+      if (e?.status === 429) {
+        const waitSecs = 45
+        console.log(`[AI] Cota excedida. Aguardando ${waitSecs}s para tentar novamente...`)
+        await sleep(waitSecs * 1000)
+      } else {
+        console.log('[AI] Erro ao consultar Gemini:', e?.message || e)
+        break
+      }
+    }
   }
+
+  return '{"acao": "EXPLORAR", "motivo": "erro na IA, modo fallback"}'
 }
 
 function buildSituationReport(bot: mineflayer.Bot): string {
@@ -125,16 +134,11 @@ function createBot() {
     if (message.startsWith('!falar ')) {
       const pergunta = message.replace('!falar ', '')
       try {
-        const resp = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'Você é EzBot_IA, um bot de Minecraft. Responda de forma curta e divertida, máximo 200 caracteres.' },
-            { role: 'user', content: pergunta }
-          ],
-          max_tokens: 60,
-        })
-        const reply = resp.choices[0].message.content || 'Hmm...'
-        bot.chat(reply.substring(0, 200))
+        const result = await gemini.generateContent(
+          `Você é EzBot_IA, um bot de Minecraft. Responda de forma curta e divertida, máximo 180 caracteres. Pergunta: ${pergunta}`
+        )
+        const reply = result.response.text().trim()
+        bot.chat(reply.substring(0, 180))
       } catch (_e) {
         bot.chat('Nao consegui pensar agora!')
       }
@@ -142,8 +146,9 @@ function createBot() {
   })
 
   bot.on('health', () => {
-    if (bot.health < 6) {
+    if (bot.health < 10) {
       console.log(`[Bot] PERIGO! Saude critica: ${bot.health}`)
+      bot.pathfinder.stop()
       eatFood(bot)
     }
   })
