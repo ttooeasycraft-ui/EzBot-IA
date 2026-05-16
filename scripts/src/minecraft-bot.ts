@@ -8,7 +8,7 @@ const { pathfinder, Movements, goals } = pathfinderPkg
 const HOST = 'Ezbotttt.aternos.me'
 const PORT = 21779
 const BOT_NAME = 'EzBot_IA'
-const VERSION = '1.20.1'
+const VERSION = '1.21.8'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
