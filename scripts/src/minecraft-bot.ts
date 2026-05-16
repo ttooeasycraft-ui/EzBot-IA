@@ -94,11 +94,15 @@ function createBot() {
     const defaultMove = new Movements(bot)
     defaultMove.allowSprinting = true
     defaultMove.canDig = true
+    defaultMove.allowParkour = true
+    defaultMove.liquidCost = 100
     bot.pathfinder.setMovements(defaultMove)
 
-    bot.chat('EzBot_IA online! Deixa eu ver o que vou fazer...')
+    bot.chat('EzBot_IA online! Saindo da agua se precisar...')
 
-    await sleep(2000)
+    await sleep(1000)
+    await escapeWaterIfNeeded(bot)
+    await sleep(1000)
     startAILoop(bot)
   })
 
@@ -185,6 +189,8 @@ async function startAILoop(bot: mineflayer.Bot) {
       }
 
       lastAIDecision = now
+      await escapeWaterIfNeeded(bot)
+
       const situation = buildSituationReport(bot)
       console.log(`[AI] Situacao: ${situation}`)
 
@@ -242,6 +248,50 @@ async function executeAction(bot: mineflayer.Bot, acao: string) {
       await randomWalk(bot)
       break
   }
+}
+
+function isInWater(bot: mineflayer.Bot): boolean {
+  const block = bot.blockAt(bot.entity.position)
+  return !!(block && (block.name === 'water' || block.name === 'flowing_water'))
+}
+
+async function escapeWaterIfNeeded(bot: mineflayer.Bot) {
+  if (!isInWater(bot)) return
+
+  console.log('[Bot] Estou na agua! Nadando para sair...')
+  bot.chat('Saindo da agua!')
+  bot.pathfinder.stop()
+
+  // Swim up first
+  bot.setControlState('jump', true)
+  await sleep(500)
+
+  // Try 8 directions using raw movement
+  const directions = ['forward', 'back', 'left', 'right'] as const
+  for (const dir of directions) {
+    if (!isInWater(bot)) break
+
+    // Look in a direction
+    const yaw = dir === 'forward' ? 0 : dir === 'back' ? Math.PI : dir === 'left' ? Math.PI / 2 : -Math.PI / 2
+    await bot.look(yaw, -0.3, true)
+
+    bot.setControlState('jump', true)
+    bot.setControlState(dir, true)
+    await sleep(2500)
+    bot.setControlState(dir, false)
+
+    if (!isInWater(bot)) {
+      console.log('[Bot] Saiu da agua!')
+      bot.chat('Fora da agua!')
+      break
+    }
+  }
+
+  bot.setControlState('jump', false)
+  bot.setControlState('forward', false)
+  bot.setControlState('back', false)
+  bot.setControlState('left', false)
+  bot.setControlState('right', false)
 }
 
 async function eatFood(bot: mineflayer.Bot) {
@@ -353,9 +403,28 @@ async function tryToSleep(bot: mineflayer.Bot) {
 }
 
 async function randomWalk(bot: mineflayer.Bot) {
+  // First, get out of water if in water
+  const block = bot.blockAt(bot.entity.position)
+  if (block && (block.name === 'water' || block.name === 'flowing_water')) {
+    console.log('[Bot] Estou na agua! Saindo...')
+    bot.chat('Saindo da agua!')
+    const pos = bot.entity.position
+    // Try to find land in multiple directions
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const angle = (attempt / 8) * Math.PI * 2
+      const x = Math.floor(pos.x + Math.cos(angle) * 20)
+      const z = Math.floor(pos.z + Math.sin(angle) * 20)
+      try {
+        await bot.pathfinder.goto(new goals.GoalXZ(x, z))
+        return
+      } catch (_e) {}
+    }
+    return
+  }
+
   const pos = bot.entity.position
-  const x = pos.x + (Math.random() - 0.5) * 80
-  const z = pos.z + (Math.random() - 0.5) * 80
+  const x = pos.x + (Math.random() - 0.5) * 60
+  const z = pos.z + (Math.random() - 0.5) * 60
   try {
     await bot.pathfinder.goto(new goals.GoalXZ(Math.floor(x), Math.floor(z)))
     console.log(`[Bot] Explorou para ${Math.floor(x)}, ${Math.floor(z)}`)
