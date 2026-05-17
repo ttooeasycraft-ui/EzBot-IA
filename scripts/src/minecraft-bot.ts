@@ -7,6 +7,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import OpenAI from 'openai'
 // @ts-ignore
 import pathfinderPkg from 'mineflayer-pathfinder'
+// @ts-ignore
+import nodemailer from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
 
@@ -848,10 +850,187 @@ function scheduleReconnect() {
   setTimeout(() => { reconnectDelay = Math.min(reconnectDelay * 2, 30000); createBot() }, reconnectDelay)
 }
 
+// ── Sistema de Email ──────────────────────────────────────────────────────────
+const EMAIL_TO   = 'ttooeasycraft@gmail.com'
+const EMAIL_FROM = 'ttooeasycraft@gmail.com'
+const SMTP_PASS  = process.env.EMAIL_SMTP_PASS
+
+// Lê as últimas N linhas do log
+function readLastLogLines(n: number): string {
+  try {
+    const content = fs.readFileSync(LOG_FILE, 'utf8')
+    const lines = content.trim().split('\n')
+    return lines.slice(-n).join('\n')
+  } catch (_e) { return '(sem logs disponíveis)' }
+}
+
+// Gera mini-mapa ASCII dos blocos ao redor do bot
+function generateMiniMap(bot: mineflayer.Bot): string {
+  if (!bot?.entity) return '(bot offline)'
+  const pos = bot.entity.position.floored()
+  const radius = 8
+  let map = ''
+  for (let z = pos.z - radius; z <= pos.z + radius; z += 2) {
+    let row = ''
+    for (let x = pos.x - radius; x <= pos.x + radius; x += 2) {
+      if (x === pos.x && z === pos.z) { row += '🤖'; continue }
+      const block = bot.blockAt({ x, y: pos.y, z } as any)
+      const below = bot.blockAt({ x, y: pos.y - 1, z } as any)
+      if (!block || block.name === 'air') {
+        if (below && below.name !== 'air') row += '🟩'
+        else row += '⬛'
+      } else {
+        const n = block.name
+        if (n.includes('water')) row += '🟦'
+        else if (n.includes('log') || n.includes('wood')) row += '🌲'
+        else if (n.includes('stone') || n.includes('cobble')) row += '🔲'
+        else if (n.includes('ore')) row += '💎'
+        else row += '🟫'
+      }
+    }
+    map += row + '\n'
+  }
+  return map
+}
+
+async function sendDailyEmail(bot: mineflayer.Bot | null) {
+  if (!SMTP_PASS) { log('[Email] Sem senha SMTP configurada'); return }
+
+  const now = new Date()
+  const elapsed = Math.floor((now.getTime() - sessionStart.getTime()) / 60000)
+  const pos = bot?.entity?.position
+  const posStr = pos ? `${Math.floor(pos.x)}, ${Math.floor(pos.y)}, ${Math.floor(pos.z)}` : 'desconhecido'
+  const aiProvider = getActiveProvider()
+  const inv = bot ? bot.inventory.items().map((i: any) => `<tr><td>${i.name}</td><td>${i.count}</td></tr>`).join('') : ''
+  const miniMap = bot?.entity ? generateMiniMap(bot) : '(offline)'
+  const lastLogs = readLastLogLines(50)
+  const missionPct = Math.min(100, Math.round(
+    (stats.woodCollected / 32) * 20 +
+    (stats.stoneCollected / 48) * 20 +
+    (stats.ironCollected / 24) * 20 +
+    (stats.diamondCollected / 6) * 20 +
+    20 // base
+  ))
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; margin: 0; padding: 20px; }
+  .card { background: #16213e; border-radius: 12px; padding: 20px; margin: 12px 0; border: 1px solid #0f3460; }
+  h1 { color: #00d4ff; margin: 0 0 4px; font-size: 24px; }
+  h2 { color: #00d4ff; font-size: 16px; margin: 0 0 12px; border-bottom: 1px solid #0f3460; padding-bottom: 8px; }
+  .badge { display: inline-block; background: #0f3460; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin: 3px; }
+  .badge.green { background: #1a4731; color: #4ade80; }
+  .badge.red { background: #4a1a1a; color: #f87171; }
+  .badge.blue { background: #1a2a4a; color: #60a5fa; }
+  .stat { display: inline-block; text-align: center; margin: 8px 12px; }
+  .stat .num { font-size: 32px; font-weight: bold; color: #00d4ff; }
+  .stat .lbl { font-size: 11px; color: #888; }
+  table { width: 100%; border-collapse: collapse; }
+  td, th { padding: 6px 10px; text-align: left; border-bottom: 1px solid #0f3460; font-size: 13px; }
+  th { color: #00d4ff; font-size: 12px; }
+  .progress { background: #0f3460; border-radius: 10px; height: 18px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, #00d4ff, #7c3aed); border-radius: 10px; transition: width 0.3s; }
+  pre { background: #0f3460; padding: 12px; border-radius: 8px; font-size: 11px; overflow-x: auto; color: #a0a0b0; white-space: pre-wrap; }
+  .map { font-size: 18px; line-height: 1.2; letter-spacing: 2px; }
+  .footer { text-align: center; color: #444; font-size: 11px; margin-top: 20px; }
+</style></head>
+<body>
+<div class="card">
+  <h1>🤖 EzBot_IA — Relatório Diário</h1>
+  <p style="color:#888;margin:0">${now.toLocaleString('pt-BR')} | Sessão de ${elapsed} minutos</p>
+  <div style="margin-top:12px">
+    <span class="badge ${bot?.entity ? 'green' : 'red'}">${bot?.entity ? '🟢 Online' : '🔴 Offline'}</span>
+    <span class="badge blue">🤖 IA: ${aiProvider?.name || 'nenhuma'}</span>
+    <span class="badge">📍 ${posStr}</span>
+    <span class="badge">❤️ HP: ${bot ? Math.floor(bot.health) : '?'}/20</span>
+    <span class="badge">🍖 Fome: ${bot?.food || '?'}/20</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🎯 Missão Atual</h2>
+  <p style="font-size:18px;font-weight:bold;color:#fff;margin:0 0 12px">${MISSION_DESC[currentMission]}</p>
+  <p style="font-size:12px;color:#888;margin:0 0 8px">Progresso até o Ender Dragon: ${missionPct}%</p>
+  <div class="progress"><div class="progress-bar" style="width:${missionPct}%"></div></div>
+</div>
+
+<div class="card">
+  <h2>📊 Estatísticas da Sessão</h2>
+  <div style="text-align:center">
+    <div class="stat"><div class="num">🪵 ${stats.woodCollected}</div><div class="lbl">Madeira</div></div>
+    <div class="stat"><div class="num">🪨 ${stats.stoneCollected}</div><div class="lbl">Pedra</div></div>
+    <div class="stat"><div class="num">⛏️ ${stats.ironCollected}</div><div class="lbl">Ferro</div></div>
+    <div class="stat"><div class="num">💎 ${stats.diamondCollected}</div><div class="lbl">Diamante</div></div>
+    <div class="stat"><div class="num">⚔️ ${stats.mobsKilled}</div><div class="lbl">Mobs mortos</div></div>
+    <div class="stat"><div class="num">💀 ${stats.deaths}</div><div class="lbl">Mortes</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🗺️ Mini-Mapa (área ao redor)</h2>
+  <div class="map">${miniMap}</div>
+  <p style="font-size:11px;color:#555;margin-top:8px">🤖=Bot 🌲=Arvore 🔲=Pedra 🟩=Chao 🟦=Agua 💎=Minerio ⬛=Vazio</p>
+</div>
+
+${inv ? `<div class="card">
+  <h2>🎒 Inventário Atual</h2>
+  <table>
+    <tr><th>Item</th><th>Quantidade</th></tr>
+    ${inv}
+  </table>
+</div>` : ''}
+
+<div class="card">
+  <h2>📝 Últimas Ações (log)</h2>
+  <pre>${lastLogs}</pre>
+</div>
+
+<div class="footer">EzBot_IA v4.0 | Servidor Minecraft 1.21.8 | Objetivo: matar o Ender Dragon 🐉</div>
+</body></html>`
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: { user: EMAIL_FROM, pass: SMTP_PASS },
+    })
+
+    await transporter.sendMail({
+      from: `"EzBot_IA 🤖" <${EMAIL_FROM}>`,
+      to: EMAIL_TO,
+      subject: `EzBot_IA — ${now.toLocaleDateString('pt-BR')} | ${MISSION_DESC[currentMission]} | HP:${bot ? Math.floor(bot.health) : '?'}`,
+      html,
+    })
+
+    log(`[Email] Relatório enviado para ${EMAIL_TO}`)
+    if (bot) bot.chat(`Email enviado para ${EMAIL_TO}!`)
+  } catch (e: any) {
+    log(`[Email] Erro ao enviar: ${e?.message}`)
+  }
+}
+
+async function dailyEmailLoop() {
+  // Envia o primeiro email 2 minutos após iniciar (para testar)
+  await sleep(2 * 60 * 1000)
+  log('[Email] Enviando primeiro relatório de teste...')
+  await sendDailyEmail(botRef)
+
+  // Depois envia a cada 24 horas
+  while (true) {
+    await sleep(24 * 60 * 60 * 1000)
+    log('[Email] Enviando relatório diário...')
+    await sendDailyEmail(botRef)
+  }
+}
+
 // ── Início ─────────────────────────────────────────────────────────────────────
 log(`[Sistema] EzBot_IA v4.0 — ${new Date().toLocaleString('pt-BR')}`)
 log(`[Sistema] Servidor: ${HOST}:${PORT} | Bot: ${BOT_NAME}`)
 log(`[Sistema] IAs configuradas: ${AI_PROVIDERS.filter(p => p.key).map(p => p.name).join(', ') || 'nenhuma'}`)
+log(`[Sistema] Email diário: ${SMTP_PASS ? `Ativado → ${EMAIL_TO}` : 'Sem senha SMTP'}`)
 initLogFile()
 createBot()
 bgAILoop()
+dailyEmailLoop()
