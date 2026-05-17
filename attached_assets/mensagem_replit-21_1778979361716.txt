@@ -1,0 +1,164 @@
+Conecta o projeto no GitHub. Você decide o que vai ser público e o que vai ser privado — tem coisa que eu não quero revelar, como o endereço do meu servidor de testes, meu nick e o nick do bot. As chaves de API (keys) nunca sobem. O que for privado fica privado, você escolhe como organizar isso.
+
+Olha o código, arruma todos os bugs e testa tudo. Quero que o bot funcione 100%.
+
+Cria um sistema onde quando os créditos de uma IA acabar, o bot troca automaticamente para a próxima IA da lista abaixo. O Google Gemini é o último porque nunca acaba:
+
+1º Cerebras - cloud.cerebras.ai
+2º Groq - console.groq.com
+3º Mistral - console.mistral.ai
+4º OpenRouter - openrouter.ai
+5º DeepSeek - platform.deepseek.com
+6º xAI Grok - console.x.ai
+7º ChatGPT - platform.openai.com
+8º Claude - console.anthropic.com
+9º Google Gemini - aistudio.google.com/app/apikey (SEMPRE O ÚLTIMO)
+
+Quando uma IA retornar erro 429, troca automaticamente para a próxima da lista.
+
+Adiciona plugins para o bot comer sozinho, equipar armadura sozinho e lutar melhor contra mobs.
+
+Adiciona comandos no chat do Minecraft para eu conseguir mandar o bot me seguir, vir até mim, voltar para a base, dormir, craftar e minerar.
+
+O bot precisa saber a hora certa de entrar em PVP e a hora certa de fugir. Ele precisa saber:
+- Quando atacar um mob
+- Quando correr e se curar
+- Quanto de vida cada mob tem
+- Se vale a pena lutar ou fugir dependendo do HP dele
+- Se ele tiver com pouco HP ele foge, se cura e volta
+
+O bot consegue fazer Live ao vivo no meu canal do YouTube? Se sim, me fala como vai funcionar que eu te envio minha chave de transmissão (stream key) separado no chat.
+
+Quero que o bot grave tudo que ele faz e envie para mim. Não sei como isso vai funcionar — pode ser vídeo, pode ser fotos, pode ser email, você decide o melhor jeito. O importante é eu conseguir ver o que o bot fez mesmo quando eu não estava olhando.
+
+O servidor e o bot estão na versão Minecraft 1.21.8 com Fabric. Todo o código e conhecimento do cérebro deve ser compatível com essa versão.
+
+Cria uma pasta chamada "cerebro" no projeto. Essa pasta é o conhecimento do bot — quanto mais ele souber, mais inteligente ele fica. Coloca dentro dela os links abaixo:
+
+TOP 3 SPEEDRUNS DO MUNDO:
+https://youtu.be/rVs0EdiVefM?si=3vPUobfHsGqmEYkH (Top 1 - 6:50)
+https://youtu.be/E3t24Urba6Y?si=9OjWg66vef30s61r (Top 2)
+https://youtu.be/C6F0AVC-6zs?si=E2cmmALuqVsUQgUq (Top 3)
+
+PVP E COMBATE:
+https://youtu.be/YcRmyyD638k?si=oMoxAnFyHBAQ968s
+https://youtu.be/4svVN77j8hs?si=-1BRUdGZSfDwLoCN
+https://youtu.be/PAg_WfsmC3o?si=SpkHhi9lRspOqflE
+
+CONSTRUIR CASA:
+https://minecraft.wiki/w/Tutorial:Construction
+https://minecraft.fandom.com/wiki/Tutorials/Construction
+https://www.youtube.com/watch?v=UaJi80o1cR8
+https://www.youtube.com/watch?v=Q36THRWXRDY
+
+VIDA DOS MOBS (HP):
+https://minecraft.wiki/w/Health
+https://minecraft.wiki/w/Damage
+https://www.sportskeeda.com/minecraft/full-list-minecraft-mobs-health
+https://minecraft.fandom.com/wiki/Damage/Mobs
+
+WIKI OFICIAL:
+https://minecraft.wiki/w/Crafting
+https://minecraft.wiki/w/Tutorial:Complete_main_adventure
+https://minecraft.wiki/w/Tutorial:Speedrun
+
+TREINAMENTO OFICIAL MINECRAFT:
+https://education.minecraft.net/pt-br/resources/training-for-educators
+
+GUIAS COMPLETOS:
+https://minecraft.fandom.com/wiki/Crafting
+https://minecraft-craftings.com/
+
+MINÉRIOS E ONDE MINERAR (válido para 1.21.8 — não mudou desde 1.18):
+https://shockbyte.com/blog/minecraft-ore-levels
+https://progameguides.com/minecraft/minecraft-1-21-ore-distribution-best-level-for-all-ores-diamonds-gold-restone-and-more/
+https://www.g-portal.com/wiki/en/minecraft-ore-distribution/
+https://beacoland.com/wiki/minecraft-ore-generation/
+https://www.pcgamesn.com/minecraft/diamond-level
+https://minecraft.fandom.com/wiki/Tutorials/Diamonds
+https://minecraft.wiki/w/Ore
+
+CONSTRUÇÕES E ESTRUTURAS DO MUNDO:
+https://minecraft.wiki/w/Generated_structures
+https://minecraft.wiki/w/Village
+https://minecraft.wiki/w/Stronghold
+https://minecraft.wiki/w/Pillager_Outpost
+https://minecraft.wiki/w/Ancient_City
+https://minecraft.wiki/w/Bastion_Remnant
+https://minecraft.wiki/w/Nether_Fortress
+https://minecraft.wiki/w/End_City
+https://minecraft.wiki/w/Woodland_Mansion
+https://minecraft.wiki/w/Desert_Temple
+https://minecraft.wiki/w/Mineshaft
+https://minecraft.wiki/w/Buried_Treasure
+https://www.g-portal.com/wiki/en/minecraft-building/
+
+TODOS OS MOBS E HP:
+https://minecraft.wiki/w/Mob
+https://minecraft.wiki/w/Zombie
+https://minecraft.wiki/w/Skeleton
+https://minecraft.wiki/w/Creeper
+https://minecraft.wiki/w/Enderman
+https://minecraft.wiki/w/Spider
+https://minecraft.wiki/w/Blaze
+https://www.sportskeeda.com/minecraft/full-list-minecraft-mobs-health
+https://minecraft.fandom.com/wiki/Damage/Mobs
+
+BIOMAS:
+https://minecraft.wiki/w/Biome
+https://minecraft.wiki/w/Java_Edition_biomes
+
+ENCANTAMENTOS:
+https://minecraft.wiki/w/Enchanting
+https://minecraft.fandom.com/wiki/Enchanting
+
+POCOES E EFEITOS:
+https://minecraft.wiki/w/Potion
+https://minecraft.wiki/w/Effect
+
+NETHER E END:
+https://minecraft.wiki/w/The_Nether
+https://minecraft.wiki/w/The_End
+https://minecraft.wiki/w/Ender_Dragon
+https://minecraft.wiki/w/Nether_portal
+
+GUIA ESPECIFICO 1.21+:
+https://beacoland.com/wiki/minecraft-ore-generation/
+https://blog.berrybyte.net/minecraft-ore-distribution-guide-1-21-best-y-levels-for-every-ore/
+https://blog.sparkedhost.com/minecraft/best-levels-for-ores-in-minecraft-1dot21plus-
+
+RESUMO DOS MELHORES NIVEIS PARA MINERAR (1.21.8):
+- Diamante: Y=-59 (mais comum), mine entre Y=-53 e Y=-64
+- Ferro: Y=15 ou Y=232 (dois picos)
+- Ouro: Y=-18 (ou qualquer Y no bioma Badlands)
+- Redstone: Y=-59
+- Lapis: Y=-1
+- Esmeralda: Y=236 (somente em montanhas)
+- Carvao: Y=96
+- Cobre: Y=48
+- Ancient Debris (Netherite): Y=15 no Nether
+
+POCOES E RECEITAS COMPLETAS 1.21:
+https://allthings.how/minecraft-potions-in-1-21-complete-brewing-and-recipe-guide/
+https://www.switchbladegaming.com/minecraft/brewing-guide/
+https://minecraft.how/blog/post/minecraft-potion-recipes-guide
+https://beebom.com/minecraft-potion-brewing-guide/
+https://www.rosenberryrooms.com/minecraft-brewing-guide-all-potion-recipes/
+https://minecraft.wiki/w/Brewing
+
+ENCANTAMENTOS COMPLETOS 1.21:
+https://minecraft.wiki/w/Tutorial:Best_enchantments_guide
+https://minecraft.wiki/w/Enchantment
+https://www.switchbladegaming.com/minecraft/enchanting-guide/
+https://www.bisecthosting.com/blog/best-sword-enchantments-in-minecraft-1-21
+https://www.exitlag.com/blog/best-sword-enchantments-minecraft/
+https://www.youtube.com/watch?v=RgTwU00M4Gg
+
+ESTRATEGIA PARA MATAR ENDER DRAGON:
+https://minecraft.wiki/w/Tutorial:Complete_main_adventure
+https://minecraft.wiki/w/Ender_Dragon
+
+FARMS E PRODUCAO:
+https://minecraft.wiki/w/Tutorial:Mob_farm
+https://minecraft.wiki/w/Tutorial:Crop_farming
+https://minecraft.wiki/w/Tutorial:Animal_farming

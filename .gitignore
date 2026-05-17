@@ -47,3 +47,16 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment secrets (NUNCA subir para o GitHub)
+.env
+.env.local
+.env.*.local
+
+# Bot logs (podem conter coordenadas e info privada)
+bot-log.txt
+*.log
+logs/
+
+# Arquivos privados do bot
+scripts/src/config-private.ts
