@@ -1,0 +1,9 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "cd scripts && npm install && npx ts-node src/minecraft-bot.ts",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
