@@ -13951,3 +13951,624 @@ Servidor: Ezbotttt.aternos.me:21779
 [17/05/2026, 01:57:04] [Walk] -> -14,12 (explorando)
 [17/05/2026, 01:57:05] [Walk] -> -39,0 (explorando)
 [17/05/2026, 01:57:06] [Walk] -> -37,-29 (explorando)
+[17/05/2026, 01:57:07] [Walk] -> -45,4 (explorando)
+[17/05/2026, 01:57:08] [Walk] -> -32,-28 (explorando)
+[17/05/2026, 01:57:09] [Walk] -> 34,12 (explorando)
+[17/05/2026, 01:57:10] [Walk] -> -41,-32 (explorando)
+[17/05/2026, 01:57:11] [Walk] -> -8,-24 (explorando)
+[17/05/2026, 01:57:12] [Walk] -> 16,-16 (explorando)
+[17/05/2026, 01:57:13] [Walk] -> 0,-34 (explorando)
+[17/05/2026, 01:57:15] [Walk] -> -22,-34 (explorando)
+[17/05/2026, 01:57:16] [Walk] -> 13,-24 (explorando)
+[17/05/2026, 01:57:17] [Walk] -> -21,16 (explorando)
+[17/05/2026, 01:57:18] [Walk] -> -23,-35 (explorando)
+[17/05/2026, 01:57:20] [Walk] -> 15,-36 (explorando)
+[17/05/2026, 01:57:21] [Walk] -> -14,22 (explorando)
+[17/05/2026, 01:57:22] [Walk] -> 36,8 (explorando)
+[17/05/2026, 01:57:23] [Walk] -> -2,-34 (explorando)
+[17/05/2026, 01:57:24] [Walk] -> -18,-22 (explorando)
+[17/05/2026, 01:57:25] [Walk] -> -38,-13 (explorando)
+[17/05/2026, 01:57:26] [Walk] -> 19,19 (explorando)
+[17/05/2026, 01:57:27] [Walk] -> 43,-25 (explorando)
+[17/05/2026, 01:57:29] [Walk] -> -35,9 (explorando)
+[17/05/2026, 01:57:30] [Walk] -> -13,34 (explorando)
+[17/05/2026, 01:57:30] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 01:57:31] [Walk] -> -19,5 (explorando)
+[17/05/2026, 01:57:32] [Walk] -> -32,-3 (explorando)
+[17/05/2026, 01:57:33] [Walk] -> 34,-33 (explorando)
+[17/05/2026, 01:57:34] [Walk] -> 11,-12 (explorando)
+[17/05/2026, 01:57:35] [Walk] -> 4,-38 (explorando)
+[17/05/2026, 01:57:36] [Walk] -> -25,18 (explorando)
+[17/05/2026, 01:57:37] [Walk] -> -36,-18 (explorando)
+[17/05/2026, 01:57:38] [Walk] -> -2,-40 (explorando)
+[17/05/2026, 01:57:39] [Walk] -> 37,-21 (explorando)
+[17/05/2026, 01:57:41] [Walk] -> 20,-11 (explorando)
+[17/05/2026, 01:57:42] [Walk] -> -9,-23 (explorando)
+[17/05/2026, 01:57:43] [Walk] -> 14,27 (explorando)
+[17/05/2026, 01:57:44] [Walk] -> 12,-26 (explorando)
+[17/05/2026, 01:57:46] [Walk] -> 28,-3 (explorando)
+[17/05/2026, 01:57:47] [Walk] -> 18,-7 (explorando)
+[17/05/2026, 01:57:49] [Walk] -> -3,-13 (explorando)
+[17/05/2026, 01:57:50] [Walk] -> 7,34 (explorando)
+[17/05/2026, 01:57:51] [Walk] -> -31,21 (explorando)
+[17/05/2026, 01:57:53] [Walk] -> -26,-33 (explorando)
+[17/05/2026, 01:57:54] [Walk] -> -20,12 (explorando)
+[17/05/2026, 01:57:56] [Walk] -> -4,-1 (explorando)
+[17/05/2026, 01:58:00] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 01:58:26] [Timeout] COLETAR_MADEIRA
+[17/05/2026, 01:58:26] [Missao] Coletando madeira
+[17/05/2026, 01:58:26] [Walk] -> -1,-19 (explorando)
+[17/05/2026, 01:58:28] [Walk] -> 18,13 (explorando)
+[17/05/2026, 01:58:29] [Walk] -> -1,-23 (explorando)
+[17/05/2026, 01:58:30] [Walk] -> 0,-2 (explorando)
+[17/05/2026, 01:58:30] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 01:58:31] [Walk] -> -4,-35 (explorando)
+[17/05/2026, 01:58:32] [Walk] -> -30,-43 (explorando)
+[17/05/2026, 01:58:33] [Walk] -> -6,6 (explorando)
+[17/05/2026, 01:59:00] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 01:59:03] [Timeout] COLETAR_MADEIRA
+[17/05/2026, 01:59:04] [Walk] -> -25,10 (explorando)
+[17/05/2026, 01:59:05] [Walk] -> 1,-18 (explorando)
+[17/05/2026, 01:59:06] [Walk] -> -36,-27 (explorando)
+[17/05/2026, 01:59:08] [Walk] -> -33,-26 (explorando)
+[17/05/2026, 01:59:09] [Walk] -> -23,10 (explorando)
+[17/05/2026, 01:59:10] [Walk] -> 25,-31 (explorando)
+[17/05/2026, 01:59:11] [Walk] -> -9,4 (explorando)
+[17/05/2026, 01:59:12] [Walk] -> -13,-2 (explorando)
+[17/05/2026, 01:59:13] [Walk] -> 28,-17 (explorando)
+[17/05/2026, 01:59:14] [Walk] -> 12,21 (explorando)
+[17/05/2026, 01:59:15] [Walk] -> -37,-3 (explorando)
+[17/05/2026, 01:59:17] [Walk] -> -1,-2 (explorando)
+[17/05/2026, 01:59:30] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 01:59:47] [Timeout] COLETAR_MADEIRA
+[17/05/2026, 01:59:48] [Walk] -> 2,-30 (explorando)
+[17/05/2026, 01:59:49] [Walk] -> 34,-41 (explorando)
+[17/05/2026, 01:59:50] [Walk] -> -26,-34 (explorando)
+[17/05/2026, 01:59:51] [Walk] -> -7,-24 (explorando)
+[17/05/2026, 01:59:52] [Walk] -> -19,4 (explorando)
+[17/05/2026, 01:59:53] [Walk] -> 10,-8 (explorando)
+[17/05/2026, 01:59:55] [Walk] -> 0,26 (explorando)
+[17/05/2026, 01:59:56] [Walk] -> 27,-31 (explorando)
+[17/05/2026, 01:59:56] ━━━ Relatorio 17/05/2026, 01:59:56 ━━━
+Tempo online: 5 min | IA ativa: Cerebras
+Missao: Coletando madeira
+Pos: -2,51,0 | HP: 20 | Fome: 20
+Madeira:0 Pedra:0 Ferro:0 Diamante:0
+Mobs mortos:0 | Mortes:0
+[17/05/2026, 01:59:56] [Missao] Coletando madeira
+[17/05/2026, 01:59:57] [Walk] -> 16,34 (explorando)
+[17/05/2026, 01:59:58] [Walk] -> 41,-1 (explorando)
+[17/05/2026, 01:59:59] [Walk] -> -10,-23 (explorando)
+[17/05/2026, 02:00:01] [Walk] -> -35,1 (explorando)
+[17/05/2026, 02:00:01] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:00:01] [PVP] Lutando: shulker (HP: 15)
+[17/05/2026, 02:00:06] [Timeout] fight
+[17/05/2026, 02:00:07] [Walk] -> -35,-2 (explorando)
+[17/05/2026, 02:00:08] [Walk] -> 5,20 (explorando)
+[17/05/2026, 02:00:10] [Walk] -> -40,-20 (explorando)
+[17/05/2026, 02:00:11] [Walk] -> -42,14 (explorando)
+[17/05/2026, 02:00:12] [Walk] -> -25,24 (explorando)
+[17/05/2026, 02:00:13] [Walk] -> -11,16 (explorando)
+[17/05/2026, 02:00:14] [Walk] -> -12,13 (explorando)
+[17/05/2026, 02:00:15] [Walk] -> 13,-26 (explorando)
+[17/05/2026, 02:00:16] [Walk] -> 2,-1 (explorando)
+[17/05/2026, 02:00:17] [Walk] -> -19,35 (explorando)
+[17/05/2026, 02:00:19] [Walk] -> -29,38 (explorando)
+[17/05/2026, 02:00:20] [Walk] -> -17,-39 (explorando)
+[17/05/2026, 02:00:21] [Walk] -> -8,-13 (explorando)
+[17/05/2026, 02:00:22] [Walk] -> -36,19 (explorando)
+[17/05/2026, 02:00:23] [Walk] -> -8,-4 (explorando)
+[17/05/2026, 02:00:24] [Walk] -> 22,-11 (explorando)
+[17/05/2026, 02:00:26] [Walk] -> 41,24 (explorando)
+[17/05/2026, 02:00:27] [Walk] -> 17,-31 (explorando)
+[17/05/2026, 02:00:28] [Walk] -> -30,-24 (explorando)
+[17/05/2026, 02:00:29] [Walk] -> 7,-32 (explorando)
+[17/05/2026, 02:00:31] [Walk] -> -4,-12 (explorando)
+[17/05/2026, 02:00:32] [Walk] -> -36,19 (explorando)
+[17/05/2026, 02:00:32] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:00:33] [Walk] -> 7,-28 (explorando)
+[17/05/2026, 02:00:34] [Walk] -> 5,-26 (explorando)
+[17/05/2026, 02:00:35] [Walk] -> -36,4 (explorando)
+[17/05/2026, 02:00:36] [Walk] -> 8,14 (explorando)
+[17/05/2026, 02:00:37] [Walk] -> -19,-9 (explorando)
+[17/05/2026, 02:00:38] [Walk] -> 9,-4 (explorando)
+[17/05/2026, 02:00:39] [Walk] -> 43,2 (explorando)
+[17/05/2026, 02:00:40] [Walk] -> -5,-5 (explorando)
+[17/05/2026, 02:00:43] [Walk] -> -4,-29 (explorando)
+[17/05/2026, 02:00:44] [Walk] -> 31,4 (explorando)
+[17/05/2026, 02:00:45] [Walk] -> -16,11 (explorando)
+[17/05/2026, 02:00:46] [Walk] -> -30,-39 (explorando)
+[17/05/2026, 02:00:47] [Walk] -> -31,2 (explorando)
+[17/05/2026, 02:00:48] [Walk] -> 7,39 (explorando)
+[17/05/2026, 02:00:49] [Walk] -> -30,40 (explorando)
+[17/05/2026, 02:00:50] [Walk] -> -1,6 (explorando)
+[17/05/2026, 02:00:51] [Walk] -> 30,-3 (explorando)
+[17/05/2026, 02:00:52] [Walk] -> 39,31 (explorando)
+[17/05/2026, 02:00:53] [Walk] -> -31,36 (explorando)
+[17/05/2026, 02:00:54] [Walk] -> 34,2 (explorando)
+[17/05/2026, 02:00:55] [Walk] -> 35,28 (explorando)
+[17/05/2026, 02:00:56] [Walk] -> 9,-23 (explorando)
+[17/05/2026, 02:00:57] [Walk] -> 40,14 (explorando)
+[17/05/2026, 02:00:58] [Walk] -> 24,30 (explorando)
+[17/05/2026, 02:00:59] [Walk] -> -34,-29 (explorando)
+[17/05/2026, 02:01:00] [Walk] -> -8,-13 (explorando)
+[17/05/2026, 02:01:01] [Walk] -> -12,17 (explorando)
+[17/05/2026, 02:01:02] [Walk] -> 41,-6 (explorando)
+[17/05/2026, 02:01:02] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:01:03] [Walk] -> 7,-26 (explorando)
+[17/05/2026, 02:01:04] [Walk] -> 21,17 (explorando)
+[17/05/2026, 02:01:05] [Walk] -> -29,-6 (explorando)
+[17/05/2026, 02:01:06] [Walk] -> -17,-12 (explorando)
+[17/05/2026, 02:01:07] [Walk] -> -23,-7 (explorando)
+[17/05/2026, 02:01:08] [Walk] -> -7,-19 (explorando)
+[17/05/2026, 02:01:09] [Walk] -> 17,4 (explorando)
+[17/05/2026, 02:01:10] [Walk] -> 11,18 (explorando)
+[17/05/2026, 02:01:11] [Walk] -> -26,42 (explorando)
+[17/05/2026, 02:01:12] [Walk] -> -8,-35 (explorando)
+[17/05/2026, 02:01:13] [Walk] -> -1,-23 (explorando)
+[17/05/2026, 02:01:14] [Walk] -> 37,-10 (explorando)
+[17/05/2026, 02:01:15] [Walk] -> -34,26 (explorando)
+[17/05/2026, 02:01:16] [Walk] -> -41,-30 (explorando)
+[17/05/2026, 02:01:17] [Walk] -> -30,-1 (explorando)
+[17/05/2026, 02:01:18] [Walk] -> 19,10 (explorando)
+[17/05/2026, 02:01:20] [Walk] -> 1,-18 (explorando)
+[17/05/2026, 02:01:21] [Walk] -> -8,26 (explorando)
+[17/05/2026, 02:01:22] [Walk] -> 21,16 (explorando)
+[17/05/2026, 02:01:23] [Walk] -> -17,-8 (explorando)
+[17/05/2026, 02:01:23] [Walk] -> -17,32 (explorando)
+[17/05/2026, 02:01:25] [Walk] -> -22,-28 (explorando)
+[17/05/2026, 02:01:25] [Walk] -> 24,-3 (explorando)
+[17/05/2026, 02:01:26] [Walk] -> 1,14 (explorando)
+[17/05/2026, 02:01:27] [Missao] Coletando madeira
+[17/05/2026, 02:01:27] [Walk] -> 23,-4 (explorando)
+[17/05/2026, 02:01:28] [Walk] -> 19,9 (explorando)
+[17/05/2026, 02:01:29] [Walk] -> 31,11 (explorando)
+[17/05/2026, 02:01:31] [Walk] -> -19,-6 (explorando)
+[17/05/2026, 02:01:31] [Walk] -> -20,-36 (explorando)
+[17/05/2026, 02:01:32] [Walk] -> 6,-35 (explorando)
+[17/05/2026, 02:01:33] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:01:34] [Walk] -> 1,29 (explorando)
+[17/05/2026, 02:01:34] [Walk] -> -20,-33 (explorando)
+[17/05/2026, 02:01:35] [Walk] -> -30,-39 (explorando)
+[17/05/2026, 02:01:36] [Walk] -> -19,-40 (explorando)
+[17/05/2026, 02:01:37] [Walk] -> 25,-14 (explorando)
+[17/05/2026, 02:01:38] [Walk] -> 32,-34 (explorando)
+[17/05/2026, 02:01:40] [Walk] -> 38,-37 (explorando)
+[17/05/2026, 02:01:41] [Walk] -> 37,-21 (explorando)
+[17/05/2026, 02:01:42] [Walk] -> 6,-37 (explorando)
+[17/05/2026, 02:01:43] [Walk] -> 24,30 (explorando)
+[17/05/2026, 02:01:44] [Walk] -> -16,37 (explorando)
+[17/05/2026, 02:01:45] [Walk] -> -29,27 (explorando)
+[17/05/2026, 02:01:45] [PVP] Lutando: shulker (HP: 15)
+[17/05/2026, 02:01:46] [Walk] -> 12,0 (explorando)
+[17/05/2026, 02:01:47] [Walk] -> -3,-14 (explorando)
+[17/05/2026, 02:01:48] [Walk] -> -27,-22 (explorando)
+[17/05/2026, 02:01:49] [Walk] -> -2,-27 (explorando)
+[17/05/2026, 02:01:50] [Walk] -> 21,32 (explorando)
+[17/05/2026, 02:01:52] [Walk] -> -28,13 (explorando)
+[17/05/2026, 02:01:53] [Walk] -> 33,-2 (explorando)
+[17/05/2026, 02:01:54] [Walk] -> 29,-8 (explorando)
+[17/05/2026, 02:01:55] [Walk] -> 29,23 (explorando)
+[17/05/2026, 02:01:56] [Walk] -> -27,33 (explorando)
+[17/05/2026, 02:01:57] [Walk] -> 11,-27 (explorando)
+[17/05/2026, 02:01:58] [Walk] -> 9,-16 (explorando)
+[17/05/2026, 02:01:59] [Walk] -> -25,-15 (explorando)
+[17/05/2026, 02:02:00] [Walk] -> -8,1 (explorando)
+[17/05/2026, 02:02:01] [Walk] -> -40,15 (explorando)
+[17/05/2026, 02:02:02] [Walk] -> -3,-22 (explorando)
+[17/05/2026, 02:02:03] [Walk] -> -42,-6 (explorando)
+[17/05/2026, 02:02:04] [Walk] -> -9,21 (explorando)
+[17/05/2026, 02:02:05] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:02:05] [Walk] -> -36,-20 (explorando)
+[17/05/2026, 02:02:06] [Walk] -> 25,23 (explorando)
+[17/05/2026, 02:02:07] [Walk] -> -1,-33 (explorando)
+[17/05/2026, 02:02:09] [Walk] -> -3,-8 (explorando)
+[17/05/2026, 02:02:10] [Walk] -> 27,-7 (explorando)
+[17/05/2026, 02:02:11] [Walk] -> 12,-40 (explorando)
+[17/05/2026, 02:02:12] [Walk] -> -2,-11 (explorando)
+[17/05/2026, 02:02:13] [Walk] -> 1,13 (explorando)
+[17/05/2026, 02:02:14] [Walk] -> -17,-32 (explorando)
+[17/05/2026, 02:02:15] [Walk] -> -10,-22 (explorando)
+[17/05/2026, 02:02:16] [Walk] -> -5,-3 (explorando)
+[17/05/2026, 02:02:17] [Walk] -> -13,-41 (explorando)
+[17/05/2026, 02:02:18] [Walk] -> -25,1 (explorando)
+[17/05/2026, 02:02:20] [Walk] -> 22,-14 (explorando)
+[17/05/2026, 02:02:21] [Walk] -> -27,-12 (explorando)
+[17/05/2026, 02:02:22] [Walk] -> -40,28 (explorando)
+[17/05/2026, 02:02:23] [Walk] -> -7,-9 (explorando)
+[17/05/2026, 02:02:24] [Walk] -> 10,15 (explorando)
+[17/05/2026, 02:02:25] [Walk] -> 5,-13 (explorando)
+[17/05/2026, 02:02:26] [Walk] -> 32,-41 (explorando)
+[17/05/2026, 02:02:27] [Walk] -> 37,32 (explorando)
+[17/05/2026, 02:02:28] [Walk] -> 8,-27 (explorando)
+[17/05/2026, 02:02:29] [Walk] -> -12,-31 (explorando)
+[17/05/2026, 02:02:30] [Walk] -> 3,29 (explorando)
+[17/05/2026, 02:02:31] [Walk] -> 7,26 (explorando)
+[17/05/2026, 02:02:32] [Walk] -> -6,-17 (explorando)
+[17/05/2026, 02:02:33] [Walk] -> -7,35 (explorando)
+[17/05/2026, 02:02:34] [Walk] -> -30,32 (explorando)
+[17/05/2026, 02:02:35] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:02:36] [Walk] -> -12,5 (explorando)
+[17/05/2026, 02:02:37] [Walk] -> 15,14 (explorando)
+[17/05/2026, 02:02:38] [Walk] -> 18,34 (explorando)
+[17/05/2026, 02:02:39] [Walk] -> -10,-7 (explorando)
+[17/05/2026, 02:02:40] [Walk] -> -20,3 (explorando)
+[17/05/2026, 02:02:41] [Walk] -> -31,0 (explorando)
+[17/05/2026, 02:02:42] [Walk] -> 11,2 (explorando)
+[17/05/2026, 02:02:44] [Walk] -> 23,39 (explorando)
+[17/05/2026, 02:02:45] [Walk] -> -27,41 (explorando)
+[17/05/2026, 02:02:47] [Walk] -> -29,39 (explorando)
+[17/05/2026, 02:02:48] [Walk] -> -38,0 (explorando)
+[17/05/2026, 02:02:49] [Walk] -> -9,-34 (explorando)
+[17/05/2026, 02:02:50] [Walk] -> -36,-36 (explorando)
+[17/05/2026, 02:02:52] [Walk] -> -36,-32 (explorando)
+[17/05/2026, 02:02:53] [Walk] -> -43,2 (explorando)
+[17/05/2026, 02:02:54] [Walk] -> -7,23 (explorando)
+[17/05/2026, 02:02:55] [Walk] -> 18,-24 (explorando)
+[17/05/2026, 02:02:56] [Walk] -> -5,9 (explorando)
+[17/05/2026, 02:02:57] [Walk] -> -20,-34 (explorando)
+[17/05/2026, 02:02:58] [Missao] Coletando madeira
+[17/05/2026, 02:02:58] [Walk] -> -38,-13 (explorando)
+[17/05/2026, 02:03:00] [Walk] -> -2,-27 (explorando)
+[17/05/2026, 02:03:01] [Walk] -> -13,24 (explorando)
+[17/05/2026, 02:03:02] [Walk] -> -23,2 (explorando)
+[17/05/2026, 02:03:03] [Walk] -> 2,-31 (explorando)
+[17/05/2026, 02:03:05] [Walk] -> 20,12 (explorando)
+[17/05/2026, 02:03:06] [Walk] -> 4,4 (explorando)
+[17/05/2026, 02:03:06] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:03:07] [Walk] -> 1,-24 (explorando)
+[17/05/2026, 02:03:08] [Walk] -> 26,-34 (explorando)
+[17/05/2026, 02:03:10] [Walk] -> -7,14 (explorando)
+[17/05/2026, 02:03:11] [Walk] -> 28,-40 (explorando)
+[17/05/2026, 02:03:12] [Walk] -> 7,25 (explorando)
+[17/05/2026, 02:03:13] [Walk] -> -4,-14 (explorando)
+[17/05/2026, 02:03:14] [Walk] -> 1,-11 (explorando)
+[17/05/2026, 02:03:15] [Walk] -> 16,17 (explorando)
+[17/05/2026, 02:03:16] [Walk] -> 17,-26 (explorando)
+[17/05/2026, 02:03:18] [Walk] -> -5,0 (explorando)
+[17/05/2026, 02:03:19] [PVP] Lutando: shulker (HP: 15)
+[17/05/2026, 02:03:20] [Walk] -> -40,-8 (explorando)
+[17/05/2026, 02:03:21] [Walk] -> 7,-25 (explorando)
+[17/05/2026, 02:03:22] [Walk] -> 21,-13 (explorando)
+[17/05/2026, 02:03:23] [Walk] -> 15,-5 (explorando)
+[17/05/2026, 02:03:24] [Walk] -> 36,3 (explorando)
+[17/05/2026, 02:03:25] [Walk] -> -4,-33 (explorando)
+[17/05/2026, 02:03:26] [Walk] -> -30,-35 (explorando)
+[17/05/2026, 02:03:27] [Walk] -> -6,-12 (explorando)
+[17/05/2026, 02:03:28] [Walk] -> -31,-19 (explorando)
+[17/05/2026, 02:03:29] [Walk] -> 4,-27 (explorando)
+[17/05/2026, 02:03:30] [Walk] -> 19,23 (explorando)
+[17/05/2026, 02:03:31] [Walk] -> -30,-35 (explorando)
+[17/05/2026, 02:03:32] [Walk] -> 18,-26 (explorando)
+[17/05/2026, 02:03:33] [Walk] -> 14,-22 (explorando)
+[17/05/2026, 02:03:34] [Walk] -> -14,-32 (explorando)
+[17/05/2026, 02:03:35] [Walk] -> 22,-29 (explorando)
+[17/05/2026, 02:03:36] [Walk] -> -29,26 (explorando)
+[17/05/2026, 02:03:37] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:03:37] [Walk] -> 13,2 (explorando)
+[17/05/2026, 02:03:38] [Walk] -> 20,-34 (explorando)
+[17/05/2026, 02:03:39] [Walk] -> -1,8 (explorando)
+[17/05/2026, 02:03:40] [Walk] -> 17,-38 (explorando)
+[17/05/2026, 02:03:41] [Walk] -> -34,-37 (explorando)
+[17/05/2026, 02:03:42] [Walk] -> -24,5 (explorando)
+[17/05/2026, 02:03:43] [Walk] -> -9,18 (explorando)
+[17/05/2026, 02:03:44] [Walk] -> -31,-1 (explorando)
+[17/05/2026, 02:03:45] [Walk] -> 3,-37 (explorando)
+[17/05/2026, 02:03:46] [Walk] -> 32,33 (explorando)
+[17/05/2026, 02:03:48] [Walk] -> -35,25 (explorando)
+[17/05/2026, 02:03:49] [Walk] -> 34,-5 (explorando)
+[17/05/2026, 02:03:50] [Walk] -> 30,-13 (explorando)
+[17/05/2026, 02:03:52] [Walk] -> -26,9 (explorando)
+[17/05/2026, 02:03:53] [Walk] -> 32,-28 (explorando)
+[17/05/2026, 02:03:54] [Walk] -> -18,-37 (explorando)
+[17/05/2026, 02:03:55] [Walk] -> 8,-22 (explorando)
+[17/05/2026, 02:03:56] [Walk] -> -21,-19 (explorando)
+[17/05/2026, 02:03:57] [Walk] -> -1,-20 (explorando)
+[17/05/2026, 02:03:58] [Walk] -> -25,-40 (explorando)
+[17/05/2026, 02:03:59] [Walk] -> -29,33 (explorando)
+[17/05/2026, 02:04:00] [Walk] -> -9,9 (explorando)
+[17/05/2026, 02:04:01] [Walk] -> -37,10 (explorando)
+[17/05/2026, 02:04:02] [Walk] -> -33,-11 (explorando)
+[17/05/2026, 02:04:03] [Walk] -> 28,-2 (explorando)
+[17/05/2026, 02:04:04] [Walk] -> -12,-24 (explorando)
+[17/05/2026, 02:04:06] [Walk] -> -13,-17 (explorando)
+[17/05/2026, 02:04:07] [Walk] -> -30,0 (explorando)
+[17/05/2026, 02:04:07] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:04:08] [Walk] -> 5,-14 (explorando)
+[17/05/2026, 02:04:09] [Walk] -> -21,-43 (explorando)
+[17/05/2026, 02:04:10] [Walk] -> 3,-4 (explorando)
+[17/05/2026, 02:04:12] [Walk] -> 19,-7 (explorando)
+[17/05/2026, 02:04:13] [Walk] -> -23,-5 (explorando)
+[17/05/2026, 02:04:14] [Walk] -> 31,-30 (explorando)
+[17/05/2026, 02:04:15] [Walk] -> -11,-28 (explorando)
+[17/05/2026, 02:04:16] [Walk] -> 26,15 (explorando)
+[17/05/2026, 02:04:17] [Walk] -> 25,-27 (explorando)
+[17/05/2026, 02:04:18] [Walk] -> 29,-39 (explorando)
+[17/05/2026, 02:04:20] [Walk] -> 6,-27 (explorando)
+[17/05/2026, 02:04:21] [Walk] -> -17,-36 (explorando)
+[17/05/2026, 02:04:22] [Walk] -> -40,5 (explorando)
+[17/05/2026, 02:04:23] [Walk] -> 25,22 (explorando)
+[17/05/2026, 02:04:24] [Walk] -> 2,9 (explorando)
+[17/05/2026, 02:04:30] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:04:30
+[17/05/2026, 02:04:30] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:04:30] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:04:30] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:04:30
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:04:30] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:04:31] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:04:31
+[17/05/2026, 02:04:31] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:04:31] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:04:31] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:04:31
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:04:31] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:04:32] [Bot] Conectado!
+[17/05/2026, 02:04:32] [Spawn] Base inicial: 1000 53 1000
+[17/05/2026, 02:04:33] [Bot] Conectado!
+[17/05/2026, 02:04:33] [Spawn] Base inicial: 1000 53 1000
+[17/05/2026, 02:04:34] [Loop] Iniciando!
+[17/05/2026, 02:04:34] [PVP] Lutando: shulker (HP: 15)
+[17/05/2026, 02:04:35] [Loop] Iniciando!
+[17/05/2026, 02:04:35] [PVP] Lutando: shulker (HP: 15)
+[17/05/2026, 02:04:39] [Timeout] fight
+[17/05/2026, 02:04:40] [Missao] Coletando madeira
+[17/05/2026, 02:04:40] [Timeout] fight
+[17/05/2026, 02:04:40] [Walk] -> -2,-17 (explorando)
+[17/05/2026, 02:04:41] [Missao] Coletando madeira
+[17/05/2026, 02:04:41] [Walk] -> 6,23 (explorando)
+[17/05/2026, 02:04:42] [Walk] -> 34,-22 (explorando)
+[17/05/2026, 02:04:43] [Walk] -> -9,1 (explorando)
+[17/05/2026, 02:04:43] [Walk] -> -14,36 (explorando)
+[17/05/2026, 02:04:44] [Walk] -> 25,1 (explorando)
+[17/05/2026, 02:04:45] [Walk] -> -31,13 (explorando)
+[17/05/2026, 02:04:45] [Walk] -> -8,31 (explorando)
+[17/05/2026, 02:04:46] [Walk] -> -42,-34 (explorando)
+[17/05/2026, 02:04:47] [Walk] -> -26,35 (explorando)
+[17/05/2026, 02:04:47] [Walk] -> -24,-34 (explorando)
+[17/05/2026, 02:04:48] [Walk] -> 34,29 (explorando)
+[17/05/2026, 02:04:49] [Walk] -> -11,15 (explorando)
+[17/05/2026, 02:04:50] [Walk] -> -22,-1 (explorando)
+[17/05/2026, 02:04:50] [Walk] -> 0,7 (explorando)
+[17/05/2026, 02:04:51] [Walk] -> -38,-8 (explorando)
+[17/05/2026, 02:04:52] [Walk] -> 9,-21 (explorando)
+[17/05/2026, 02:04:53] [Walk] -> 32,25 (explorando)
+[17/05/2026, 02:04:54] [Walk] -> 36,5 (explorando)
+[17/05/2026, 02:04:55] [Walk] -> 42,20 (explorando)
+[17/05/2026, 02:04:57] [Walk] -> -8,-2 (explorando)
+[17/05/2026, 02:04:58] [Walk] -> -36,33 (explorando)
+[17/05/2026, 02:04:59] [Walk] -> 25,20 (explorando)
+[17/05/2026, 02:05:00] [Walk] -> 14,33 (explorando)
+[17/05/2026, 02:05:02] [Walk] -> 40,20 (explorando)
+[17/05/2026, 02:05:03] [Walk] -> 7,-19 (explorando)
+[17/05/2026, 02:05:04] [Walk] -> -18,7 (explorando)
+[17/05/2026, 02:05:05] [Walk] -> 28,-30 (explorando)
+[17/05/2026, 02:05:07] [Walk] -> 37,-34 (explorando)
+[17/05/2026, 02:05:08] [Walk] -> 3,-11 (explorando)
+[17/05/2026, 02:05:10] [Walk] -> 0,-20 (explorando)
+[17/05/2026, 02:05:11] [Walk] -> -25,-31 (explorando)
+[17/05/2026, 02:05:12] [Walk] -> 0,10 (explorando)
+[17/05/2026, 02:05:13] [Walk] -> -17,18 (explorando)
+[17/05/2026, 02:05:14] [Walk] -> -10,-1 (explorando)
+[17/05/2026, 02:05:15] [Walk] -> -33,38 (explorando)
+[17/05/2026, 02:05:15] [Walk] -> 7,41 (explorando)
+[17/05/2026, 02:05:16] [Walk] -> 29,21 (explorando)
+[17/05/2026, 02:05:17] [Walk] -> -23,30 (explorando)
+[17/05/2026, 02:05:18] [Walk] -> -26,-3 (explorando)
+[17/05/2026, 02:05:18] [Walk] -> -12,-34 (explorando)
+[17/05/2026, 02:05:19] [Walk] -> 32,26 (explorando)
+[17/05/2026, 02:05:19] [Walk] -> 26,-2 (explorando)
+[17/05/2026, 02:05:20] [Walk] -> 8,-1 (explorando)
+[17/05/2026, 02:05:21] [Walk] -> 17,-12 (explorando)
+[17/05/2026, 02:05:22] [Walk] -> 45,4 (explorando)
+[17/05/2026, 02:05:22] [Walk] -> -2,-4 (explorando)
+[17/05/2026, 02:05:23] [Walk] -> 0,14 (explorando)
+[17/05/2026, 02:05:23] [Walk] -> 14,-13 (explorando)
+[17/05/2026, 02:05:24] [Walk] -> -20,39 (explorando)
+[17/05/2026, 02:05:25] [Walk] -> -2,24 (explorando)
+[17/05/2026, 02:05:26] [Walk] -> 23,3 (explorando)
+[17/05/2026, 02:05:26] [Walk] -> -27,-28 (explorando)
+[17/05/2026, 02:05:27] [Walk] -> 15,-28 (explorando)
+[17/05/2026, 02:05:28] [Walk] -> 26,-5 (explorando)
+[17/05/2026, 02:05:29] [Walk] -> 6,-18 (explorando)
+[17/05/2026, 02:05:29] [Walk] -> 15,-36 (explorando)
+[17/05/2026, 02:05:30] [Walk] -> -2,-5 (explorando)
+[17/05/2026, 02:05:30] [Walk] -> 13,-22 (explorando)
+[17/05/2026, 02:05:31] [Walk] -> 2,10 (explorando)
+[17/05/2026, 02:05:32] [Walk] -> 24,-27 (explorando)
+[17/05/2026, 02:05:33] [Walk] -> -34,2 (explorando)
+[17/05/2026, 02:05:34] [Walk] -> -11,-13 (explorando)
+[17/05/2026, 02:05:34] [Walk] -> -38,31 (explorando)
+[17/05/2026, 02:05:35] [Walk] -> 0,-43 (explorando)
+[17/05/2026, 02:05:35] [Walk] -> 24,16 (explorando)
+[17/05/2026, 02:05:36] [Walk] -> 15,-8 (explorando)
+[17/05/2026, 02:05:37] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:05:37] [Walk] -> 2,2 (explorando)
+[17/05/2026, 02:05:37] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:05:38] [Walk] -> 38,37 (explorando)
+[17/05/2026, 02:05:38] [Walk] -> 23,-28 (explorando)
+[17/05/2026, 02:05:39] [Walk] -> 35,20 (explorando)
+[17/05/2026, 02:05:39] [Walk] -> -11,-21 (explorando)
+[17/05/2026, 02:05:40] [Walk] -> 23,13 (explorando)
+[17/05/2026, 02:05:40] [Walk] -> -14,4 (explorando)
+[17/05/2026, 02:05:41] [Walk] -> 6,-5 (explorando)
+[17/05/2026, 02:05:42] [Walk] -> 29,10 (explorando)
+[17/05/2026, 02:05:43] [Walk] -> -31,10 (explorando)
+[17/05/2026, 02:05:45] [Walk] -> 31,41 (explorando)
+[17/05/2026, 02:05:46] [Walk] -> -25,9 (explorando)
+[17/05/2026, 02:05:48] [Walk] -> 12,-3 (explorando)
+[17/05/2026, 02:05:49] [Walk] -> 15,-6 (explorando)
+[17/05/2026, 02:05:50] [Walk] -> -8,-27 (explorando)
+[17/05/2026, 02:05:51] [Walk] -> 10,5 (explorando)
+[17/05/2026, 02:05:52] [Walk] -> 13,-18 (explorando)
+[17/05/2026, 02:05:53] [Walk] -> 14,8 (explorando)
+[17/05/2026, 02:05:55] [Walk] -> -27,-38 (explorando)
+[17/05/2026, 02:05:56] [Walk] -> 31,17 (explorando)
+[17/05/2026, 02:05:57] [Walk] -> 16,-23 (explorando)
+[17/05/2026, 02:05:58] [Walk] -> -12,7 (explorando)
+[17/05/2026, 02:05:59] [Walk] -> 37,-28 (explorando)
+[17/05/2026, 02:06:00] [Walk] -> -35,7 (explorando)
+[17/05/2026, 02:06:02] [Walk] -> 39,-21 (explorando)
+[17/05/2026, 02:06:03] [Walk] -> 37,-39 (explorando)
+[17/05/2026, 02:06:04] [Walk] -> 43,32 (explorando)
+[17/05/2026, 02:06:05] [Walk] -> -9,14 (explorando)
+[17/05/2026, 02:06:07] [Walk] -> -32,35 (explorando)
+[17/05/2026, 02:06:07] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:06:08] [Walk] -> -11,40 (explorando)
+[17/05/2026, 02:06:08] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:06:09] [Walk] -> -9,-11 (explorando)
+[17/05/2026, 02:06:10] [Walk] -> -24,21 (explorando)
+[17/05/2026, 02:06:11] [Walk] -> -30,-36 (explorando)
+[17/05/2026, 02:06:11] [Timeout] COLETAR_MADEIRA
+[17/05/2026, 02:06:12] [Missao] Coletando madeira
+[17/05/2026, 02:06:12] [Missao] Coletando madeira
+[17/05/2026, 02:06:12] [Walk] -> -17,17 (explorando)
+[17/05/2026, 02:06:12] [Walk] -> 30,28 (explorando)
+[17/05/2026, 02:06:13] [Walk] -> -17,11 (explorando)
+[17/05/2026, 02:06:13] [Walk] -> -11,-37 (explorando)
+[17/05/2026, 02:06:14] [Walk] -> -27,41 (explorando)
+[17/05/2026, 02:06:14] [Walk] -> 18,-43 (explorando)
+[17/05/2026, 02:06:15] [Walk] -> -3,13 (explorando)
+[17/05/2026, 02:06:16] [Walk] -> 21,-13 (explorando)
+[17/05/2026, 02:06:17] [Walk] -> 15,1 (explorando)
+[17/05/2026, 02:06:17] [Walk] -> 0,30 (explorando)
+[17/05/2026, 02:06:18] [Walk] -> 7,4 (explorando)
+[17/05/2026, 02:06:18] [Walk] -> -16,-15 (explorando)
+[17/05/2026, 02:06:20] [Walk] -> -26,1 (explorando)
+[17/05/2026, 02:06:20] [Walk] -> 9,-4 (explorando)
+[17/05/2026, 02:06:21] [Walk] -> 20,20 (explorando)
+[17/05/2026, 02:06:21] [Walk] -> -7,12 (explorando)
+[17/05/2026, 02:06:22] [Walk] -> -30,-25 (explorando)
+[17/05/2026, 02:06:22] [Walk] -> -15,43 (explorando)
+[17/05/2026, 02:06:23] [Walk] -> -18,25 (explorando)
+[17/05/2026, 02:06:24] [Walk] -> -5,29 (explorando)
+[17/05/2026, 02:06:25] [Walk] -> -14,-1 (explorando)
+[17/05/2026, 02:06:25] [Walk] -> 5,-24 (explorando)
+[17/05/2026, 02:06:26] [Walk] -> -1,-22 (explorando)
+[17/05/2026, 02:06:26] [Walk] -> -15,28 (explorando)
+[17/05/2026, 02:06:27] [Walk] -> -22,-12 (explorando)
+[17/05/2026, 02:06:27] [Walk] -> 5,-2 (explorando)
+[17/05/2026, 02:06:28] [Walk] -> -34,-31 (explorando)
+[17/05/2026, 02:06:29] [Walk] -> 9,-29 (explorando)
+[17/05/2026, 02:06:30] [Walk] -> 37,-7 (explorando)
+[17/05/2026, 02:06:30] [Email] Enviando primeiro relatório de teste...
+[17/05/2026, 02:06:31] [Walk] -> 16,21 (explorando)
+[17/05/2026, 02:06:31] [Email] Enviando primeiro relatório de teste...
+[17/05/2026, 02:06:50] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:06:50
+[17/05/2026, 02:06:50] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:06:50] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:06:50] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:06:50
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:06:50] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:06:53] [Bot] Conectado!
+[17/05/2026, 02:06:53] [Spawn] Base inicial: -117 54 82
+[17/05/2026, 02:06:55] [Loop] Iniciando!
+[17/05/2026, 02:06:55] [Comeu] bread
+[17/05/2026, 02:06:55] [Missao] Minerando ferro
+[17/05/2026, 02:07:11] [Kill] zombie (total: 1)
+[17/05/2026, 02:07:12] [Kill] zombie (total: 2)
+[17/05/2026, 02:07:25] [Timeout] MINERAR_FERRO
+[17/05/2026, 02:07:27] [Comeu] bread
+[17/05/2026, 02:07:27] [Mine] The goal was changed before it could be completed!
+[17/05/2026, 02:07:50] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:07:50
+[17/05/2026, 02:07:50] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:07:50] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:07:50] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:07:50
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:07:50] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:07:52] [Bot] Conectado!
+[17/05/2026, 02:07:52] [Spawn] Base inicial: -117 54 82
+[17/05/2026, 02:07:54] [Loop] Iniciando!
+[17/05/2026, 02:07:57] [Missao] Minerando ferro
+[17/05/2026, 02:08:23] [Coletou] Ferro #1
+[17/05/2026, 02:08:23] [Comeu] bread
+[17/05/2026, 02:08:46] [Coletou] Ferro #2
+[17/05/2026, 02:08:48] [Comeu] bread
+[17/05/2026, 02:08:48] [Comeu] bread
+[17/05/2026, 02:08:54] [Coletou] Ferro #3
+[17/05/2026, 02:08:55] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:09:09] [Coletou] Ferro #4
+[17/05/2026, 02:09:14] [Coletou] Ferro #5
+[17/05/2026, 02:09:20] [Coletou] Ferro #6
+[17/05/2026, 02:09:25] [Coletou] Ferro #7
+[17/05/2026, 02:09:25] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:09:30] [Coletou] Ferro #8
+[17/05/2026, 02:09:30] [Missao] Minerando diamante
+[17/05/2026, 02:09:30] [DiaDig] y=42
+[17/05/2026, 02:09:33] [DiaDig] y=41
+[17/05/2026, 02:09:35] [DiaDig] y=40
+[17/05/2026, 02:09:37] [DiaDig] y=39
+[17/05/2026, 02:09:39] [DiaDig] y=38
+[17/05/2026, 02:09:41] [DiaDig] y=37
+[17/05/2026, 02:09:45] [DiaDig] y=36
+[17/05/2026, 02:09:47] [DiaDig] y=35
+[17/05/2026, 02:09:48] [DiaDig] y=34
+[17/05/2026, 02:09:49] [DiaDig] y=33
+[17/05/2026, 02:09:50] [Email] Enviando primeiro relatório de teste...
+[17/05/2026, 02:10:12] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:10:12
+[17/05/2026, 02:10:12] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:10:12] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:10:12] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:10:12
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:10:12] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:10:13] [Bot] Conectado!
+[17/05/2026, 02:10:13] [Spawn] Base inicial: -119 32 91
+[17/05/2026, 02:10:15] [Loop] Iniciando!
+[17/05/2026, 02:10:15] [Missao] Missao final: Ender Dragon!
+[17/05/2026, 02:10:15] [Walk] -> -95,125 (explorando)
+[17/05/2026, 02:10:45] [Timeout] MATAR_DRAGAO
+[17/05/2026, 02:10:46] [Walk] -> -114,64 (explorando)
+[17/05/2026, 02:11:16] [Timeout] MATAR_DRAGAO
+[17/05/2026, 02:11:16] [Walk] -> -120,45 (explorando)
+[17/05/2026, 02:11:18] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:11:46] [Missao] Missao final: Ender Dragon!
+[17/05/2026, 02:11:46] [Walk] -> -104,37 (explorando)
+[17/05/2026, 02:11:48] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:11:59] [Walk] -> -120,10 (explorando)
+[17/05/2026, 02:12:04] [Walk] -> -125,26 (explorando)
+[17/05/2026, 02:12:12] [Email] Enviando primeiro relatório de teste...
+[17/05/2026, 02:12:26] [Sistema] EzBot_IA v4.0 — 17/05/2026, 02:12:26
+[17/05/2026, 02:12:26] [Sistema] Servidor: Ezbotttt.aternos.me:21779 | Bot: EzBot_IA
+[17/05/2026, 02:12:26] [Sistema] IAs configuradas: Cerebras, Groq, Mistral, OpenRouter, DeepSeek, xAI Grok, OpenAI, Anthropic, Gemini
+[17/05/2026, 02:12:26] [Sistema] Email diário: Ativado → ttooeasycraft@gmail.com
+
+============================================================
+Sessao iniciada: 17/05/2026, 02:12:26
+Servidor: Ezbotttt.aternos.me:21779
+============================================================
+[17/05/2026, 02:12:26] [Bot] Conectando Ezbotttt.aternos.me:21779...
+[17/05/2026, 02:12:28] [Bot] Conectado!
+[17/05/2026, 02:12:28] [Spawn] Base inicial: -124 25 33
+[17/05/2026, 02:12:30] [Loop] Iniciando!
+[17/05/2026, 02:12:30] [Missao] Missao final: Ender Dragon!
+[17/05/2026, 02:12:30] [Walk] -> -127,35 (explorando)
+[17/05/2026, 02:13:00] [Timeout] MATAR_DRAGAO
+[17/05/2026, 02:13:00] [Walk] -> -113,65 (explorando)
+[17/05/2026, 02:13:13] [Walk] -> -153,12 (explorando)
+[17/05/2026, 02:13:20] [Walk] -> -123,0 (explorando)
+[17/05/2026, 02:13:28] [Walk] -> -131,-37 (explorando)
+[17/05/2026, 02:13:32] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:13:55] [Walk] -> -160,-35 (explorando)
+[17/05/2026, 02:14:00] [Comeu] bread
+[17/05/2026, 02:14:00] [Missao] Missao final: Ender Dragon!
+[17/05/2026, 02:14:00] [Walk] -> -160,4 (explorando)
+[17/05/2026, 02:14:02] [IA] Erro Cerebras: 404 status code (no body)
+[17/05/2026, 02:14:27] [Email] Enviando primeiro relatório de teste...
