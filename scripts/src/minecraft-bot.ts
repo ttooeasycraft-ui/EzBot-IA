@@ -802,7 +802,7 @@ function createBot() {
     move.allowSprinting = true
     move.canDig = true
     move.allowParkour = true
-    move.liquids = true
+    move.liquids = new Set<number>()
     bot.pathfinder.setMovements(move)
 
     const aiProvider = getActiveProvider()
