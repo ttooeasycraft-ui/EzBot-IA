@@ -4,4 +4,3 @@ scripts/node_modules
 bot-log.txt
 .git
 dist
-build
