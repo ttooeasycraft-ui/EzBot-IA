@@ -1,6 +1,0 @@
-node_modules
-scripts/node_modules
-.env
-bot-log.txt
-.git
-dist
