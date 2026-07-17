@@ -15,11 +15,13 @@ import path from 'path'
 const { pathfinder, Movements, goals: PF } = pathfinderPkg
 
 // ── Config (privado — vem de variáveis de ambiente) ───────────────────────────
-const HOST     = process.env.MINECRAFT_HOST    || 'Ezbotttt.aternos.me'
-const PORT     = parseInt(process.env.MINECRAFT_PORT || '21779')
-const BOT_NAME = process.env.BOT_NAME          || 'EzBot_IA'
-const VERSION  = '1.21.8'
-const LOG_FILE = path.join(process.cwd(), 'bot-log.txt')
+const HOST          = process.env.MINECRAFT_HOST    || 'factionsmatrix.com'
+const PORT          = parseInt(process.env.MINECRAFT_PORT || '25565')
+const BOT_NAME      = process.env.BOT_NAME          || 'FactWiki'
+const VERSION       = process.env.MINECRAFT_VERSION || '1.21.11'
+const LOG_FILE      = path.join(process.cwd(), 'bot-log.txt')
+const EXPLORE_MODE  = process.env.EXPLORE_MODE === 'true'
+const NERDZONE_MODE = HOST.includes('nerdzone')
 
 // ── Sistema de IA Rotativa ────────────────────────────────────────────────────
 interface AIProvider {
@@ -100,11 +102,20 @@ async function askAI(prompt: string): Promise<string | null> {
     }
   } catch (e: any) {
     const status = e?.status || e?.response?.status
-    if (status === 429 || e?.message?.includes('429') || e?.message?.toLowerCase().includes('quota')) {
-      markProviderExhausted(provider)
+    const msg = e?.message ?? ''
+    // Rotacionar em erros permanentes (404 = recurso/modelo inexistente, 401 = auth, 403 = sem permissão)
+    // e também em erros de quota (429)
+    const isHardFail = status === 404 || status === 401 || status === 403 ||
+      msg.includes('404') || msg.includes('401') || msg.includes('403')
+    const isQuota = status === 429 || msg.includes('429') || msg.toLowerCase().includes('quota')
+    if (isHardFail || isQuota) {
+      const ttl = isHardFail ? 6 * 60 * 60 * 1000 : 60 * 60 * 1000  // 6h para hard fail, 1h para quota
+      provider.exhaustedUntil = Date.now() + ttl
+      log(`[IA] ${provider.name} indisponível (${status ?? msg.slice(0,30)}). Rotacionando...`)
+      currentAIIndex = (currentAIIndex + 1) % AI_PROVIDERS.length
       return askAI(prompt)
     }
-    log(`[IA] Erro ${provider.name}: ${e?.message}`)
+    log(`[IA] Erro ${provider.name}: ${msg}`)
   }
   return null
 }
@@ -543,6 +554,457 @@ async function followPlayer(bot: mineflayer.Bot) {
   try { await goNear(bot, target.position, 3) } catch (_e) {}
 }
 
+// ── Modo Explorador — bússola → GUI → entra no server + testa comandos ────────
+async function explorationLoop(bot: mineflayer.Bot) {
+  log('[Explorar] MODO EXPLORADOR ativo — bússola → servidor → comandos')
+
+  // Captura todo chat/system no arquivo de log
+  const captured: string[] = []
+  const rawCapture = (jsonMsg: any) => {
+    const txt = jsonMsg.toString ? jsonMsg.toString() : JSON.stringify(jsonMsg)
+    captured.push(txt)
+    log(`[Explorar/Chat] ${txt}`)
+  }
+  bot.on('message', rawCapture)
+
+  const cmd = async (c: string, delayMs = 2000) => {
+    if (!bot.entity) return
+    try { bot.chat(c) } catch (_e) {}
+    await sleep(delayMs)
+  }
+
+  // ── Passo 1: aguardar login e bússola no inventário ──────────────────────────
+  await sleep(3000)
+  log('[Explorar] Procurando bússola no inventário...')
+
+  // Tentar usar a bússola (activateItem) — ela fica na mão ou no inventário
+  let compassUsed = false
+
+  // Listener para GUI aberta após clicar na bússola
+  const onWindow = async (window: any) => {
+    if (compassUsed) return
+    compassUsed = true
+    await sleep(1200)
+    const slots: any[] = window.slots ?? []
+    log(`[Explorar] GUI aberta — ${slots.length} slots. Procurando cabeça/servidor...`)
+
+    let clicked = false
+    for (let i = 0; i < slots.length; i++) {
+      const item = slots[i]
+      if (!item) continue
+      let display = ''
+      try {
+        display = typeof item.displayName === 'string'
+          ? item.displayName
+          : JSON.stringify(item.displayName ?? '')
+      } catch (_e) { display = item.name ?? '' }
+      const lore = JSON.stringify(item.customData ?? '').toLowerCase()
+      const text = (display + ' ' + lore + ' ' + (item.name ?? '')).toLowerCase()
+
+      // Procura cabeça de jogador ou qualquer item de "entrar"
+      if (
+        item.name?.includes('skull') || item.name?.includes('head') ||
+        text.includes('entrar') || text.includes('jogar') || text.includes('play') ||
+        text.includes('servidor') || text.includes('survival') || text.includes('server')
+      ) {
+        log(`[Explorar] Clicando slot ${i}: "${display.slice(0, 60)}" (${item.name})`)
+        try {
+          await bot.clickWindow(i, 0, 0)
+          log('[Explorar] ✅ Clicou na cabeça/servidor! Aguardando teleporte...')
+          clicked = true
+        } catch (e: any) { log(`[Explorar] Erro ao clicar: ${e?.message}`) }
+        break
+      }
+    }
+
+    if (!clicked) {
+      // Fallback: loga todos os slots para debug e clica no primeiro não-nulo
+      for (let i = 0; i < slots.length; i++) {
+        const item = slots[i]
+        if (!item) continue
+        let display = ''
+        try { display = typeof item.displayName === 'string' ? item.displayName : JSON.stringify(item.displayName ?? '') } catch (_e) { display = item.name ?? '' }
+        log(`[Explorar] Slot ${i}: ${item.name} — "${display.slice(0, 50)}"`)
+      }
+      // Clica no primeiro slot não-nulo
+      const first = slots.findIndex(s => s != null)
+      if (first >= 0) {
+        log(`[Explorar] Fallback: clicando primeiro slot não-nulo (${first})`)
+        try { await bot.clickWindow(first, 0, 0) } catch (_e) {}
+      }
+    }
+  }
+  bot.once('windowOpen', onWindow)
+
+  // Tentar equipar e usar a bússola
+  const compassSlot = bot.inventory.items().find((i: any) => i.name?.includes('compass'))
+  if (compassSlot) {
+    log(`[Explorar] Bússola encontrada no slot ${compassSlot.slot} — equipando e usando`)
+    try {
+      await bot.equip(compassSlot, 'hand')
+      await sleep(500)
+      await bot.activateItem()
+      log('[Explorar] Bússola usada! Aguardando GUI...')
+    } catch (e: any) {
+      log(`[Explorar] Erro ao usar bússola: ${e?.message}`)
+    }
+  } else {
+    log('[Explorar] Bússola não encontrada ainda — aguardando 3s e tentando de novo...')
+    await sleep(3000)
+    const compassSlot2 = bot.inventory.items().find((i: any) => i.name?.includes('compass'))
+    if (compassSlot2) {
+      try {
+        await bot.equip(compassSlot2, 'hand')
+        await sleep(500)
+        await bot.activateItem()
+        log('[Explorar] Bússola usada na segunda tentativa!')
+      } catch (e: any) { log(`[Explorar] Bússola erro: ${e?.message}`) }
+    } else {
+      log('[Explorar] SEM bússola no inventário — logando todos os itens:')
+      bot.inventory.items().forEach((i: any) => log(`[Explorar/Inv] ${i.name} x${i.count} slot=${i.slot}`))
+      bot.removeListener('windowOpen', onWindow)
+    }
+  }
+
+  // ── Passo 2: aguardar chegar no servidor (teleporte demora alguns segundos) ───
+  await sleep(8000)
+  log('[Explorar] --- Iniciando sequência de comandos no servidor ---')
+
+  const comandos = [
+    '/list', '/online', '/who',
+    '/help', '/ajuda', '/menu',
+    '/spawn', '/hub', '/lobby',
+    '/warp', '/warps',
+    '/rank', '/ranks', '/vip', '/loja',
+    '/stats', '/perfil', '/profile',
+    '/kit', '/kits',
+    '/jobs', '/job',
+    '/clan', '/guild', '/faccao',
+    '/sethome', '/home',
+    '/tp', '/tpa',
+    '/discord',
+    '/regras', '/rules',
+    '/pvp', '/arena',
+    '/mina', '/mine',
+    '/eventos', '/event',
+    '/missao', '/quest',
+    '/economia', '/eco', '/balance', '/bal',
+    '/leilao', '/auction',
+    '/troca', '/trade',
+    '/report',
+  ]
+
+  for (const c of comandos) {
+    if (!bot.entity) break
+    await cmd(c, 1600)
+  }
+
+  // Escuta passiva por mais 2 minutos
+  log('[Explorar] Escuta passiva por 120s...')
+  await sleep(120000)
+
+  // Salva relatório
+  const report = {
+    server: HOST,
+    version: VERSION,
+    timestamp: new Date().toISOString(),
+    chatLines: captured.length,
+    messages: captured,
+  }
+  try { fs.writeFileSync('/tmp/exploration-report.json', JSON.stringify(report, null, 2)) } catch (_e) {}
+  log(`[Explorar] Relatório salvo: ${captured.length} linhas capturadas`)
+  log('[Explorar] --- FIM DA EXPLORAÇÃO ---')
+}
+
+// ── Nerdzone.gg — navegar com bússola para o Rankup ──────────────────────────
+async function nerdzoneNavigate(bot: mineflayer.Bot): Promise<void> {
+  log('[Nerdzone] Aguardando 4s antes de usar a bússola (warmup anti-kick)...')
+  await sleep(4000)   // aguardar inventário e estado da sessão estabilizarem
+  log('[Nerdzone] Usando bússola para entrar no Rankup...')
+  let done = false
+
+  const onWindow = async (window: any) => {
+    if (done) return
+    done = true
+    await sleep(1200)
+    const slots: any[] = window.slots ?? []
+    log(`[Nerdzone] GUI bússola — ${slots.length} slots`)
+    let clicked = false
+    for (let i = 0; i < slots.length; i++) {
+      const item = slots[i]
+      if (!item) continue
+      let display = ''
+      try { display = typeof item.displayName === 'string' ? item.displayName : JSON.stringify(item.displayName ?? '') } catch (_e) { display = item.name ?? '' }
+      const lore = JSON.stringify(item.customData ?? '').toLowerCase()
+      const text = (display + ' ' + lore + ' ' + (item.name ?? '')).toLowerCase()
+      if (item.name?.includes('skull') || item.name?.includes('head') ||
+          text.includes('entrar') || text.includes('jogar') || text.includes('rankup') ||
+          text.includes('servidor') || text.includes('survival') || text.includes('play')) {
+        log(`[Nerdzone] Clicando slot ${i}: "${display.slice(0, 60)}" (${item.name})`)
+        try { await bot.clickWindow(i, 0, 0); clicked = true } catch (e: any) { log(`[Nerdzone] Erro: ${e?.message}`) }
+        break
+      }
+    }
+    if (!clicked) {
+      slots.forEach((item, i) => { if (item) { let d=''; try { d = typeof item.displayName==='string'?item.displayName:JSON.stringify(item.displayName??'') } catch(_e){d=item.name??''} log(`[Nerdzone] Slot ${i}: ${item.name} — "${d.slice(0,50)}"`) } })
+      const first = slots.findIndex(s => s != null)
+      if (first >= 0) { try { await bot.clickWindow(first, 0, 0) } catch (_e) {} }
+    }
+    // NÃO re-ativar física aqui — só após confirmação do server switch (em nerdzoneLoop)
+    done = true
+  }
+  bot.once('windowOpen', onWindow)
+
+  // Tentar usar a bússola
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const comp = bot.inventory.items().find((i: any) => i.name?.includes('compass'))
+    if (comp) {
+      try {
+        await bot.equip(comp, 'hand')
+        await sleep(400)
+        await bot.activateItem()
+        log('[Nerdzone] Bússola usada!')
+        await sleep(5000)
+        return
+      } catch (e: any) { log(`[Nerdzone] Bússola erro: ${e?.message}`) }
+    }
+    await sleep(2500)
+  }
+  bot.removeListener('windowOpen', onWindow)
+  log('[Nerdzone] Sem bússola — continuando sem navegar')
+}
+
+// ── Nerdzone.gg — loop de mineração na mina privada (sem pathfinder) ─────────
+// Não usa goNear/pathfinder — pathfinder envia pacotes de movimento que causam
+// BadPacketException no BungeeCord do nerdzone.gg após o server switch.
+// Em vez disso: teleporta com /mina go, olha para blocos próximos, cava direto.
+async function nerdzoneMineCycle(bot: mineflayer.Bot): Promise<void> {
+  log('[Nerdzone/Mina] Indo para a mina com /mina go ...')
+  try { bot.chat('/mina go') } catch (_e) {}
+  await sleep(8000)   // aguardar teleport + chunk load
+  if (!bot.entity) return
+
+  const mineableNames = new Set([
+    'stone','cobblestone','gravel','sand','dirt','coal_ore','iron_ore','gold_ore',
+    'diamond_ore','emerald_ore','redstone_ore','lapis_ore','copper_ore','deepslate',
+    'netherrack','basalt','blackstone','nether_gold_ore','quartz_ore','glowstone',
+    'obsidian','end_stone','purpur_block','magma_block','terracotta',
+    'deepslate_coal_ore','deepslate_iron_ore','deepslate_gold_ore','deepslate_diamond_ore',
+    'deepslate_emerald_ore','deepslate_redstone_ore','deepslate_lapis_ore','deepslate_copper_ore',
+  ])
+
+  let blocksMinedThisCycle = 0
+  const spawnPos = bot.entity.position.floored()
+  log(`[Nerdzone/Mina] Pos pós-teleport: ${spawnPos.x},${spawnPos.y},${spawnPos.z}`)
+
+  // Debug ampliado: checar TODOS os blocos em raio 20, incluindo abaixo (dy=-20)
+  const nearbyBlocks = new Map<string, number>()
+  for (let dx = -20; dx <= 20; dx++) {
+    for (let dy = -20; dy <= 5; dy++) {
+      for (let dz = -20; dz <= 20; dz++) {
+        try {
+          const b = bot.blockAt(new (require('vec3'))(spawnPos.x+dx, spawnPos.y+dy, spawnPos.z+dz) as any)
+          if (b && b.name !== 'air') nearbyBlocks.set(b.name, (nearbyBlocks.get(b.name) ?? 0) + 1)
+        } catch (_e) {}
+      }
+    }
+  }
+  const topBlocks = [...nearbyBlocks.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([n,c])=>`${n}x${c}`).join(', ')
+  log(`[Nerdzone/Mina] Blocos detectados (raio 20, dy-20..+5): ${topBlocks || 'nenhum'}`)
+
+  // Usar findBlock para buscar o bloco minerável mais próximo (sem limite de dy)
+  // Raio 20 em esfera — muito mais eficiente que loop manual
+  const mineableFilter = (block: any) => block && (
+    mineableNames.has(block.name) ||
+    block.name.includes('ore') || block.name.includes('stone') ||
+    block.name.includes('dirt') || block.name.includes('sand') ||
+    block.name.includes('gravel') || block.name.includes('deepslate') ||
+    block.name.includes('terracotta') || block.name.includes('netherrack')
+  )
+
+  // Cavar até 200 blocos por ciclo ou até não encontrar mais
+  for (let i = 0; i < 200; i++) {
+    if (!bot.entity) return
+    const block = bot.findBlock({ matching: mineableFilter, maxDistance: 5 })
+    if (!block) {
+      log(`[Nerdzone/Mina] Sem blocos no raio 5 após ${blocksMinedThisCycle} minerados`)
+      break
+    }
+    try {
+      try { await withTimeout(bot.lookAt(block.position.offset(0.5, 0.5, 0.5)), 800, 'lookAt') } catch (_e) {}
+      if (!bot.entity) return
+      await withTimeout(bot.dig(block), 5000, 'digBlock')
+      blocksMinedThisCycle++
+    } catch (_e) {}
+  }
+
+  log(`[Nerdzone/Mina] Ciclo concluído — ${blocksMinedThisCycle} blocos minerados`)
+
+  // Aguardar antes de resetar
+  if (bot.entity) {
+    const waitMs = blocksMinedThisCycle < 3 ? 12000 : 5000
+    await sleep(waitMs)
+    if (bot.entity) {
+      log('[Nerdzone/Mina] Resetando mina...')
+      try { bot.chat('/resetar') } catch (_e) {}
+      await sleep(10000)   // aguardar regeneração da mina
+    }
+  }
+}
+
+// ── Nerdzone.gg — loop autônomo principal ─────────────────────────────────────
+let nerdzoneMsgIndex = 0
+const NERDZONE_CHAT_OPENERS = [
+  'alguem pode me explicar como rankear mais rapido aqui?',
+  'qual o melhor item pra comprar no leilao agora?',
+  'quanto vale um key de ouro hoje?',
+  'alguem tem picareta boa pra alugar? to começando',
+  'essa economia do servidor ta boa, muita gente online',
+  'como funciona o sistema de clan aqui?',
+  'qual vip vale mais a pena comprar?',
+  'to na mina agora, alguem sabe o que da mais tokens?',
+  'o /explorar vale a pena ir?',
+  'boa tarde galera, novo aqui kkk',
+  'quanto vc ganha por ciclo de mina?',
+  'evento de brainrots ainda ativo?',
+  'tem alguma guild recrutando?',
+  'alguem me ensina a usar o /leilao?',
+]
+
+async function nerdzoneLoop(bot: mineflayer.Bot) {
+  log('[Nerdzone] ★ Modo autônomo Rankup iniciado!')
+
+  // 1) Tentar trocar de servidor via comando direto (mais estável que GUI)
+  //    Se não funcionar, usa a bússola como fallback
+  log('[Nerdzone] Tentando trocar de servidor via comando...')
+  let switchedViaCommand = false
+  const switchCmds = ['/servidor rankup', '/server rankup', '/ir rankup', '/rankup', '/play rankup', '/join rankup']
+  for (const cmd of switchCmds) {
+    if (!bot.entity) break
+    try { bot.chat(cmd) } catch (_e) {}
+    await sleep(2500)
+    // Se a posição mudou (saiu do hub spawn 0,107,6), o switch funcionou
+    if (bot.entity) {
+      const p = bot.entity.position
+      if (Math.abs(p.y - 107) > 5 || Math.abs(p.x) > 10) {
+        log(`[Nerdzone] Switch via comando "${cmd}" aparenta ter funcionado (pos: ${Math.floor(p.x)},${Math.floor(p.y)},${Math.floor(p.z)})`)
+        switchedViaCommand = true
+        break
+      }
+    }
+  }
+
+  if (!switchedViaCommand) {
+    // 1b) Fallback: usar bússola (GUI)
+    log('[Nerdzone] Comandos não funcionaram — usando bússola...')
+    await nerdzoneNavigate(bot)
+  }
+
+  // Re-ativar física AGORA (após switch, não dentro de onWindow)
+  // O BadPacketException do BungeeCord só acontece durante a conexão inicial ao hub
+  await sleep(3000)
+  if (!bot.entity) return
+  try { (bot as any).physicsEnabled = true; log('[Nerdzone] Física re-ativada pós server-switch') } catch (_e) {}
+  await sleep(3000)
+  if (!bot.entity) return
+
+  // 2) Pegar picareta e plot se ainda não tem
+  try { bot.chat('/picareta') } catch (_e) {}
+  await sleep(2000)
+  try { bot.chat('/p auto') } catch (_e) {}
+  await sleep(2000)
+
+  // 3) Anunciar entrada de forma natural
+  const aiProvider = getActiveProvider()
+  const intro = await askAI(`Você é ${BOT_NAME}, um jogador de Minecraft acabando de entrar no servidor Rankup do nerdzone.gg. Escreva UMA mensagem de 1 linha (max 80 chars) para o chat do servidor, em português informal brasileiro, apresentando você ou comentando sobre o servidor. Nada de emojis excessivos.`)
+  if (intro && bot.entity) { bot.chat(intro.substring(0, 100)); log(`[Nerdzone/Chat] ${intro}`) }
+  await sleep(3000)
+
+  // 4) Loop principal
+  let lastChatTime    = Date.now()
+  let lastEconTime    = 0
+  let lastRankTime    = 0
+  let lastLeilaoTime  = 0
+  let lastWarpsTime   = 0
+  let mineCount       = 0
+
+  while (bot.entity) {
+    try {
+      // Checar comandos de economia a cada 3 min
+      if (Date.now() - lastEconTime > 180000) {
+        lastEconTime = Date.now()
+        try { bot.chat('/tokens') } catch (_e) {}
+        await sleep(2000)
+        try { bot.chat('/money') } catch (_e) {}
+        await sleep(1500)
+      }
+
+      // Checar rank a cada 8 min
+      if (Date.now() - lastRankTime > 480000) {
+        lastRankTime = Date.now()
+        try { bot.chat('/prestigio') } catch (_e) {}
+        await sleep(2000)
+        try { bot.chat('/boosters') } catch (_e) {}
+        await sleep(1500)
+      }
+
+      // Ver leilão a cada 10 min
+      if (Date.now() - lastLeilaoTime > 600000) {
+        lastLeilaoTime = Date.now()
+        try { bot.chat('/leilao') } catch (_e) {}
+        await sleep(2500)
+        // Fechar janela se abriu
+        try { await bot.closeWindow((bot as any).currentWindow) } catch (_e) {}
+      }
+
+      // Ver warps a cada 15 min
+      if (Date.now() - lastWarpsTime > 900000) {
+        lastWarpsTime = Date.now()
+        try { bot.chat('/warps') } catch (_e) {}
+        await sleep(2000)
+        try { await bot.closeWindow((bot as any).currentWindow) } catch (_e) {}
+        try { bot.chat('/duvidas') } catch (_e) {}
+        await sleep(2000)
+        try { await bot.closeWindow((bot as any).currentWindow) } catch (_e) {}
+      }
+
+      // Chat social com IA a cada 2-5 minutos
+      const chatInterval = 120000 + Math.random() * 180000
+      if (Date.now() - lastChatTime > chatInterval) {
+        lastChatTime = Date.now()
+        const p = bot.entity.position
+        const inv = bot.inventory.items().slice(0, 6).map((i: any) => `${i.name}x${i.count}`).join(', ')
+        const opener = NERDZONE_CHAT_OPENERS[nerdzoneMsgIndex % NERDZONE_CHAT_OPENERS.length]
+        nerdzoneMsgIndex++
+        const aiMsg = await askAI(
+          `Você é ${BOT_NAME}, jogador de Minecraft no servidor Rankup nerdzone.gg. ` +
+          `Inv: ${inv || 'vazio'}. Pos: ${Math.floor(p.x)},${Math.floor(p.y)},${Math.floor(p.z)}. ` +
+          `Ciclos de mina feitos: ${mineCount}. Prompt de inspiração: "${opener}". ` +
+          `Escreva UMA mensagem curta (max 100 chars) para o chat global do servidor em português brasileiro informal. ` +
+          `Pode ser uma pergunta, comentário sobre economia, piada, ou interação social. Sem emojis excessivos.`
+        )
+        if (aiMsg && bot.entity) {
+          bot.chat(aiMsg.substring(0, 100))
+          log(`[Nerdzone/Chat] ${aiMsg}`)
+        }
+        await sleep(1000)
+      }
+
+      // Ciclo principal: ir à mina e minerar
+      await nerdzoneMineCycle(bot)
+      mineCount++
+
+      // Auto-comer
+      if (bot.food < 16 && bot.entity) await tryEat(bot)
+
+    } catch (e: any) {
+      log(`[Nerdzone/Erro] ${e?.message || String(e)}`)
+      await sleep(3000)
+    }
+  }
+  log('[Nerdzone] Loop encerrado — bot desconectado')
+}
+
 // ── Loop Principal ─────────────────────────────────────────────────────────────
 async function actionLoop(bot: mineflayer.Bot) {
   log('[Loop] Iniciando!')
@@ -605,6 +1067,8 @@ async function actionLoop(bot: mineflayer.Bot) {
 
 // ── Chat de IA em Background ──────────────────────────────────────────────────
 async function bgAILoop() {
+  // Nerdzone tem seu próprio chat loop integrado no nerdzoneLoop
+  if (NERDZONE_MODE) return
   await sleep(35000)
   while (true) {
     await sleep(30000)
@@ -802,8 +1266,23 @@ function createBot() {
     move.allowSprinting = true
     move.canDig = true
     move.allowParkour = true
-    move.liquids = new Set<number>()
     bot.pathfinder.setMovements(move)
+
+    if (EXPLORE_MODE) {
+      log('[Explorar] Modo explorador ativo — ignorando actionLoop')
+      explorationLoop(bot)
+      return
+    }
+
+    if (NERDZONE_MODE) {
+      // Desabilitar física imediatamente — pacotes de posição causam BadPacketException
+      // no BungeeCord do nerdzone.gg logo após spawn
+      try { (bot as any).physicsEnabled = false } catch (_e) {}
+      log('[Nerdzone] Física desativada para evitar BadPacketException no BungeeCord')
+      log('[Nerdzone] Servidor nerdzone.gg detectado — iniciando modo Rankup autônomo!')
+      nerdzoneLoop(bot)
+      return
+    }
 
     const aiProvider = getActiveProvider()
     bot.chat(`EzBot_IA v4 online! IA: ${aiProvider?.name || 'Sem IA'}. Objetivo: matar o Ender Dragon!`)
@@ -838,16 +1317,268 @@ function createBot() {
     followTarget = null; forceMission = null
   })
 
-  bot.on('kicked', (r: string) => { log(`[Kick] ${r}`); botRef = null; scheduleReconnect() })
+  // ── Resource Pack Auto-Accept ────────────────────────────────────────────────
+  // Essencial para servidores com resource pack obrigatório (ex: factionsmatrix.com)
+  // Sem isso o servidor pode dar kick antes do bot agir
+  // @ts-ignore — resource_pack_send não está nos tipos mas existe em mineflayer
+  bot.on('resource_pack_send', async (url: string) => {
+    log(`[ResourcePack] Pack detectado: ${url.substring(0, 80)}`)
+    log('[ResourcePack] Aceitando automaticamente para evitar kick...')
+    bot.chat('Baixando resource pack, aguarde...')
+    bot.acceptResourcePack()
+    await sleep(3000)
+    log('[ResourcePack] Resource pack aceito! Continuando...')
+  })
+
+  // ── Sistema Anti-Queda ───────────────────────────────────────────────────────
+  // Monitora velocidade vertical; para pathfinder se queda causar dano fatal
+  let lastSafeY = 64
+  let fallStartY = -1
+  bot.on('physicsTick', () => {
+    if (!bot.entity) return
+    const pos = bot.entity.position
+    const vy  = (bot.entity as any).velocity?.y ?? 0
+    if (bot.entity.onGround) {
+      lastSafeY  = pos.y
+      fallStartY = -1
+      return
+    }
+    // Detectar início de queda
+    if (vy < -0.2 && fallStartY < 0) fallStartY = pos.y
+    // Se caiu mais de 22 blocos (dano de queda começa em 23+), parar ação
+    if (fallStartY > 0 && (fallStartY - pos.y) > 22) {
+      bot.pathfinder.stop()
+      log(`[AntiFall] Queda crítica detectada de Y:${Math.floor(fallStartY)} → Y:${Math.floor(pos.y)}. Pathfinder parado!`)
+      fallStartY = -1
+    }
+    // Teleportar de volta à base se travar caindo no void
+    if (pos.y < -60) {
+      log('[AntiFall] Void detectado! Tentando voltar à superfície...')
+      bot.chat('Caí no void! Procurando saída...')
+      if (basePos) {
+        try { bot.pathfinder.setGoal(new PF.GoalBlock(basePos.x, basePos.y, basePos.z)) } catch (_e) {}
+      }
+    }
+  })
+
+  // ── State File — escreve estado para API do radar ────────────────────────────
+  const stateInterval = setInterval(() => {
+    if (!botRef?.entity) return
+    const pos = botRef.entity.position
+    // Scan 21x21 block grid ao redor do bot para o mini-mapa (bloco abaixo dos pés)
+    const mapBlocks: Record<string, string> = {}
+    try {
+      const bp = botRef.entity.position.floored()
+      for (let dx = -10; dx <= 10; dx++) {
+        for (let dz = -10; dz <= 10; dz++) {
+          const b = botRef.blockAt({ x: bp.x + dx, y: bp.y - 1, z: bp.z + dz } as any)
+          if (b && b.name !== 'air') mapBlocks[`${dx},${dz}`] = b.name
+        }
+      }
+    } catch (_e) {}
+
+    const state = {
+      online: true,
+      name: BOT_NAME,
+      health: Math.round(botRef.health * 10) / 10,
+      food: botRef.food,
+      position: { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) },
+      posStr: `${Math.floor(pos.x)}, ${Math.floor(pos.y)}, ${Math.floor(pos.z)}`,
+      mission: currentMission,
+      missionDesc: MISSION_DESC[currentMission],
+      stats: { ...stats },
+      aiProvider: getActiveProvider()?.name || null,
+      inventory: botRef.inventory.items().map((i: any) => ({ name: i.name, count: i.count })),
+      mapBlocks,
+      timestamp: Date.now(),
+    }
+    try { fs.writeFileSync('/tmp/bot-state.json', JSON.stringify(state)) } catch (_e) {}
+  }, 3000)
+
+  let didReconnect = false  // evita double-reconnect (kicked + end disparam juntos)
+  bot.on('kicked', (r: any) => {
+    const msg = typeof r === 'string' ? r : JSON.stringify(r)
+    log(`[Kick] ${msg}`)
+    clearInterval(stateInterval)
+    writeOfflineState()
+    botRef = null
+    if (!didReconnect) { didReconnect = true; scheduleReconnect() }
+  })
   bot.on('error', (e: Error) => log(`[Erro] ${e.message}`))
-  bot.on('end', () => { log('[Desconectado]'); botRef = null; scheduleReconnect() })
+  bot.on('end', () => {
+    log('[Desconectado]')
+    clearInterval(stateInterval)
+    writeOfflineState()
+    botRef = null
+    if (!didReconnect) { didReconnect = true; scheduleReconnect() }
+  })
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // RADAR DE EXTRAÇÃO — módulo isolado, não altera nenhuma funcionalidade acima
+  // Fluxo: AuthMe login → bloco verde → /mina → ouvir coords no chat
+  // ════════════════════════════════════════════════════════════════════════════
+
+  const RADAR_FILE    = '/tmp/radar-coords.json'
+  const BOT_PASS      = process.env.BOT_PASSWORD || 'EzBot2025!'
+  let radarAuthed     = false   // true após login AuthMe confirmado
+  let radarMinaDone   = false   // true após entrar no mundo de extração
+
+  /** Adiciona coordenadas ao arquivo compartilhado com a API (RAM: /tmp) */
+  function writeRadarCoord(player: string, x: number, y: number, z: number) {
+    let data: { players: any[] } = { players: [] }
+    try { data = JSON.parse(fs.readFileSync(RADAR_FILE, 'utf8')) } catch (_e) {}
+    // Atualiza entrada existente ou insere nova (deduplicado por nick)
+    data.players = [
+      { player, x, y, z, timestamp: Date.now() },
+      ...data.players.filter((p: any) => p.player !== player),
+    ].slice(0, 100)
+    try { fs.writeFileSync(RADAR_FILE, JSON.stringify(data)) } catch (_e) {}
+    log(`[Radar] 📍 ${player} @ ${x},${y},${z}`)
+  }
+
+  /** Depois do login: tenta clicar no bloco verde e executar /mina */
+  async function radarEntrySequence() {
+    if (radarMinaDone) return
+    log('[Radar/Entry] Aguardando lobby carregar...')
+    await sleep(3500)
+
+    // Tenta clicar no bloco verde de entrada (slime, emerald, lime*)
+    const GREEN = ['emerald_block', 'slime_block', 'lime_concrete', 'lime_wool', 'lime_terracotta', 'lime_stained_glass']
+    const entryBlock = bot.findBlock({ matching: (b: any) => GREEN.includes(b?.name), maxDistance: 30 })
+    if (entryBlock) {
+      try {
+        await goNear(bot, entryBlock.position, 3)
+        await bot.activateBlock(entryBlock)
+        log('[Radar/Entry] ✅ Bloco de entrada clicado!')
+        await sleep(2500)
+      } catch (e: any) { log(`[Radar/Entry] Bloco: ${e?.message}`) }
+    } else {
+      log('[Radar/Entry] Bloco verde não encontrado na área — indo direto para /mina')
+    }
+
+    bot.chat('/mina')
+    log('[Radar] /mina executado — aguardando GUI do mundo...')
+  }
+
+  /** Listener de TODAS as mensagens do servidor (system, broadcast, AuthMe, etc.) */
+  bot.on('message', async (jsonMsg: any) => {
+    const plain = jsonMsg.toString().replace(/§[0-9a-fklmnor]/gi, '').trim()
+
+    // ── [Conta original?] Detectar botão [Não] clicável no chat ──────────────
+    try {
+      const extras: any[] = (jsonMsg.json?.extra ?? []).concat(jsonMsg.json?.with ?? [])
+      for (const part of extras) {
+        if (!part?.text) continue
+        if (/n[aã]o/i.test(String(part.text)) && part?.clickEvent?.action === 'run_command') {
+          log(`[Radar/Conta] Clicando [Não] pirata → ${part.clickEvent.value}`)
+          setTimeout(() => bot.chat(part.clickEvent.value), 800)
+          return
+        }
+      }
+    } catch (_e) {}
+
+    // ── AuthMe: pedido de registro ────────────────────────────────────────────
+    if (!radarAuthed && (plain.includes('/registrar') || /registre/i.test(plain))) {
+      log('[Radar/Auth] Detectado pedido de REGISTRO — /registrar em 2.5s...')
+      setTimeout(() => bot.chat(`/registrar ${BOT_PASS} ${BOT_PASS}`), 2500)
+      return
+    }
+
+    // ── AuthMe: pedido de login ────────────────────────────────────────────────
+    if (!radarAuthed && (plain.includes('/logar') || (plain.toLowerCase().includes('login') && plain.toLowerCase().includes('comando')))) {
+      log('[Radar/Auth] Detectado pedido de LOGIN — /logar em 2.5s...')
+      setTimeout(() => bot.chat(`/logar ${BOT_PASS}`), 2500)
+      return
+    }
+
+    // ── Login confirmado (AuthMe envia "autenticado" ou "bem-vindo") ──────────
+    if (!radarAuthed && (/autenticado|logado|bem.vindo/i.test(plain))) {
+      radarAuthed = true
+      log('[Radar/Auth] ✅ Login confirmado! Iniciando entrada no mundo...')
+      radarEntrySequence().catch((e: any) => log(`[Radar/Entry] ${e?.message}`))
+      return
+    }
+
+    // ── Coordenadas de extração ───────────────────────────────────────────────
+    // Padrão: [Extração] PlayerNome foi marcado no mundo de extração! (+499, 52, 678)
+    const cm = plain.match(/\[Extra[çc][ãa]o\][^\w]*([A-Za-z0-9_]{2,16})[^\d([]+[\(\[]?([+-]?\d+)[,\s]+\d+[,\s]+([+-]?\d+)/i)
+    if (cm) {
+      const [, player, x, z] = cm
+      // Tenta capturar Y também
+      const full = plain.match(/([+-]?\d+)[,\s]+(\d+)[,\s]+([+-]?\d+)/)
+      const y = full ? parseInt(full[2]) : 64
+      writeRadarCoord(player, parseInt(x), y, parseInt(z))
+    }
+  })
+
+  /** Selecionar mundo "Dia" (sem PvP) no menu do /mina — apenas factionsmatrix */
+  bot.on('windowOpen', async (window: any) => {
+    if (NERDZONE_MODE || radarMinaDone || !window) return
+    await sleep(1400)
+    const slots: any[] = window.slots ?? []
+    log(`[Radar/Mina] GUI detectada — ${slots.length} slots`)
+
+    for (let i = 0; i < slots.length; i++) {
+      const item = slots[i]
+      if (!item) continue
+      // Tenta ler displayName (pode ser objeto JSON ou string)
+      let display = ''
+      try {
+        display = typeof item.displayName === 'string'
+          ? item.displayName
+          : JSON.stringify(item.displayName ?? '')
+      } catch (_e) { display = item.name ?? '' }
+      const lore = JSON.stringify(item.customData ?? '').toLowerCase()
+      const text  = (display + ' ' + lore).toLowerCase()
+
+      if (text.includes('dia') || text.includes('pvp') || text.includes('extra')) {
+        log(`[Radar/Mina] Selecionando slot ${i}: "${display.slice(0, 50)}"`)
+        try {
+          await bot.clickWindow(i, 0, 0)
+          radarMinaDone = true
+          log('[Radar/Mina] ✅ Mundo de extração selecionado! Radar ativo.')
+        } catch (e: any) { log(`[Radar/Mina] Erro no clique: ${e?.message}`) }
+        return
+      }
+    }
+
+    // Fallback: tentar slot 0 ou 4
+    const fallback = slots[0] ? 0 : (slots[4] ? 4 : -1)
+    if (fallback >= 0) {
+      log(`[Radar/Mina] Fallback: clicando slot ${fallback}`)
+      try { await bot.clickWindow(fallback, 0, 0); radarMinaDone = true } catch (_e) {}
+    }
+  })
+
+  // ════════════════════════════════════════════════════════════════════════════
 
   return bot
 }
 
+function writeOfflineState() {
+  try {
+    fs.writeFileSync('/tmp/bot-state.json', JSON.stringify({
+      online: false, name: BOT_NAME, reason: 'Desconectado', timestamp: Date.now()
+    }))
+  } catch (_e) {}
+}
+
+// ── Reconexão Progressiva ─────────────────────────────────────────────────────
+// Padrão: Imediato → 3 min → 7 horas → 24 horas (evitar ban por flood de conexão)
+const RECONNECT_SEQUENCE = [0, 3 * 60 * 1000, 7 * 60 * 60 * 1000, 24 * 60 * 60 * 1000]
+let reconnectAttempt = 0
+
 function scheduleReconnect() {
-  log(`[Reconectar] em ${reconnectDelay / 1000}s...`)
-  setTimeout(() => { reconnectDelay = Math.min(reconnectDelay * 2, 30000); createBot() }, reconnectDelay)
+  const delay = RECONNECT_SEQUENCE[Math.min(reconnectAttempt, RECONNECT_SEQUENCE.length - 1)]
+  reconnectAttempt++
+  if (delay === 0) {
+    log(`[Reconectar] Tentativa ${reconnectAttempt} — imediata`)
+    createBot()
+  } else {
+    const label = delay < 3600000 ? `${delay / 60000}min` : `${delay / 3600000}h`
+    log(`[Reconectar] Tentativa ${reconnectAttempt} — em ${label}`)
+    setTimeout(createBot, delay)
+  }
 }
 
 // ── Sistema de Email ──────────────────────────────────────────────────────────
@@ -866,31 +1597,35 @@ function readLastLogLines(n: number): string {
 
 // Gera mini-mapa ASCII dos blocos ao redor do bot
 function generateMiniMap(bot: mineflayer.Bot): string {
-  if (!bot?.entity) return '(bot offline)'
-  const pos = bot.entity.position.floored()
-  const radius = 8
-  let map = ''
-  for (let z = pos.z - radius; z <= pos.z + radius; z += 2) {
-    let row = ''
-    for (let x = pos.x - radius; x <= pos.x + radius; x += 2) {
-      if (x === pos.x && z === pos.z) { row += '🤖'; continue }
-      const block = bot.blockAt({ x, y: pos.y, z } as any)
-      const below = bot.blockAt({ x, y: pos.y - 1, z } as any)
-      if (!block || block.name === 'air') {
-        if (below && below.name !== 'air') row += '🟩'
-        else row += '⬛'
-      } else {
-        const n = block.name
-        if (n.includes('water')) row += '🟦'
-        else if (n.includes('log') || n.includes('wood')) row += '🌲'
-        else if (n.includes('stone') || n.includes('cobble')) row += '🔲'
-        else if (n.includes('ore')) row += '💎'
-        else row += '🟫'
+  try {
+    if (!bot?.entity) return '(bot offline)'
+    const pos = bot.entity.position.floored()
+    const radius = 8
+    let map = ''
+    for (let z = pos.z - radius; z <= pos.z + radius; z += 2) {
+      let row = ''
+      for (let x = pos.x - radius; x <= pos.x + radius; x += 2) {
+        if (x === pos.x && z === pos.z) { row += '🤖'; continue }
+        try {
+          const block = bot.blockAt(new (require('vec3'))(x, pos.y, z))
+          const below = bot.blockAt(new (require('vec3'))(x, pos.y - 1, z))
+          if (!block || block.name === 'air') {
+            if (below && below.name !== 'air') row += '🟩'
+            else row += '⬛'
+          } else {
+            const n = block.name
+            if (n.includes('water')) row += '🟦'
+            else if (n.includes('log') || n.includes('wood')) row += '🌲'
+            else if (n.includes('stone') || n.includes('cobble')) row += '🔲'
+            else if (n.includes('ore')) row += '💎'
+            else row += '🟫'
+          }
+        } catch (_e) { row += '❓' }
       }
+      map += row + '\n'
     }
-    map += row + '\n'
-  }
-  return map
+    return map
+  } catch (_e) { return '(minimap indisponível)' }
 }
 
 async function sendDailyEmail(bot: mineflayer.Bot | null) {
