@@ -8,7 +8,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY scripts/package.json ./scripts/
 COPY tsconfig.base.json tsconfig.json ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 COPY scripts/ ./scripts/
 COPY cerebro/ ./cerebro/
